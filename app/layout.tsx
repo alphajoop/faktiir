@@ -1,14 +1,57 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Inter, Manrope } from 'next/font/google';
+import { SessionProvider } from 'next-auth/react';
 import './globals.css';
+import { ThemeProvider } from '@/components/ui/theme-provider';
+import { Toaster } from '@/components/ui/sonner';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+/*
+Police secondaire — Inter (Textes + “Faktiir”)
+
+Inter donne :
+
+un style moderne
+
+un contraste clair
+
+👉 À utiliser pour :
+
+Textes
+
+Textes secondaires
+
+Textes de formulaire
+
+Textes de bouton
+*/
+const inter = Inter({
+  variable: '--font-inter',
+  weight: ['400', '500', '600', '700'],
   subsets: ['latin'],
 });
 
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
+/*
+Police titre / branding — Manrope (Titres + “Faktiir”)
+
+Manrope donne :
+
+un style SaaS moderne
+
+des arrondis élégants
+
+un caractère premium
+
+👉 À utiliser pour :
+
+H1, H2
+
+Headers des pages
+
+Branding (logo texte)
+*/
+const manrope = Manrope({
+  variable: '--font-manrope',
+  weight: ['400', '500', '600', '700', '800'],
   subsets: ['latin'],
 });
 
@@ -25,10 +68,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
+      <body className={`${inter.variable} ${manrope.variable} antialiased`}>
+        <SessionProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+            <Toaster richColors />
+          </ThemeProvider>
+        </SessionProvider>
       </body>
     </html>
   );
