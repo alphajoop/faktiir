@@ -13,6 +13,18 @@ export interface Invoice {
   createdAt: string;
 }
 
+export interface CreateInvoice {
+  clientName: string;
+  clientEmail: string;
+  items: Array<{
+    description: string;
+    quantity: number;
+    price: number;
+  }>;
+  tax: number;
+  dueDate: string;
+}
+
 export interface PaginatedResponse<T> {
   data: T[];
   meta: {

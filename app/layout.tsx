@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Inter, Manrope } from 'next/font/google';
 import { SessionProvider } from 'next-auth/react';
+import { Analytics } from '@vercel/analytics/next';
 import './globals.css';
 import { ThemeProvider } from '@/components/ui/theme-provider';
 import { Toaster } from '@/components/ui/sonner';
@@ -56,9 +57,9 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: 'Faktiir',
+  title: 'Faktiir - Facturation simple pour freelances',
   description:
-    'Une nouvelle façon simple et locale de gérer vos factures arrive bientôt',
+    'Créez des factures professionnelles en quelques clics. Solution de facturation simple pour freelances et petits commerçants.',
 };
 
 export default function RootLayout({
@@ -80,6 +81,7 @@ export default function RootLayout({
             <Toaster richColors />
           </ThemeProvider>
         </SessionProvider>
+        <Analytics />
       </body>
     </html>
   );

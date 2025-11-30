@@ -3,6 +3,7 @@ import { auth } from '@/lib/auth';
 
 // Chemins publics accessibles sans authentification
 const PUBLIC_PATHS = [
+  '/',
   '/login',
   '/register',
   '/verify-otp',
