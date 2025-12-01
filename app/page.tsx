@@ -16,6 +16,7 @@ import {
   Twitter,
   Linkedin,
   Mail,
+  User,
 } from 'lucide-react';
 import { ModeToggle } from '@/components/ui/mode-toggle';
 
@@ -41,7 +42,10 @@ export default function LandingPage() {
             <div className="flex items-center gap-3">
               <ModeToggle />
               <Link href="/login">
-                <Button variant="ghost">Connexion</Button>
+                <Button variant="ghost" className="gap-2">
+                  <User className="h-4 w-4 md:hidden" />
+                  <span className="hidden md:inline">Connexion</span>
+                </Button>
               </Link>
               <Link href="/register">
                 <Button>Commencer</Button>
