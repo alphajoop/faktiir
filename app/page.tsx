@@ -40,7 +40,9 @@ export default function LandingPage() {
           <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-4">
             <FaktiirLogo className="text-primary h-28 w-28" />
             <div className="flex items-center gap-3">
-              <ModeToggle />
+              <div className="hidden md:block">
+                <ModeToggle />
+              </div>
               <Link href="/login">
                 <Button variant="ghost" className="gap-2">
                   <User className="h-4 w-4 md:hidden" />
