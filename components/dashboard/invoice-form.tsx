@@ -154,9 +154,9 @@ export function InvoiceForm() {
           {fields.map((field, index) => (
             <div
               key={field.id}
-              className="grid grid-cols-12 items-start gap-4 rounded-lg border p-4"
+              className="grid grid-cols-1 gap-3 rounded-lg border p-4 sm:grid-cols-12 sm:gap-4"
             >
-              <div className="col-span-5">
+              <div className="sm:col-span-5">
                 <FormField
                   control={form.control}
                   name={`items.${index}.description`}
@@ -177,7 +177,7 @@ export function InvoiceForm() {
                 />
               </div>
 
-              <div className="col-span-2">
+              <div className="sm:col-span-2">
                 <FormField
                   control={form.control}
                   name={`items.${index}.quantity`}
@@ -202,7 +202,7 @@ export function InvoiceForm() {
                 />
               </div>
 
-              <div className="col-span-3">
+              <div className="sm:col-span-3">
                 <FormField
                   control={form.control}
                   name={`items.${index}.price`}
@@ -228,7 +228,7 @@ export function InvoiceForm() {
                 />
               </div>
 
-              <div className="col-span-1 flex items-center justify-center pt-2">
+              <div className="flex items-center justify-end sm:col-span-1 sm:justify-center sm:pt-2">
                 <Button
                   type="button"
                   variant="ghost"
