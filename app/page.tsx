@@ -19,6 +19,7 @@ import {
   User,
 } from 'lucide-react';
 import { ModeToggle } from '@/components/ui/mode-toggle';
+import Image from 'next/image';
 
 export default function LandingPage() {
   return (
@@ -422,13 +423,24 @@ export default function LandingPage() {
                   <p className="text-muted-foreground mb-2 text-xs">
                     Paiements acceptés
                   </p>
-                  <div className="flex items-center gap-2">
-                    <span className="bg-muted text-foreground rounded px-2 py-1 text-xs font-medium">
-                      Wave
-                    </span>
-                    <span className="bg-muted text-foreground rounded px-2 py-1 text-xs font-medium">
-                      Orange Money
-                    </span>
+                  <div className="flex items-center gap-3">
+                    <div className="relative h-8 w-8">
+                      <Image
+                        src="/brands/wave.svg"
+                        alt="Wave"
+                        fill
+                        className="object-contain"
+                      />
+                    </div>
+
+                    <div className="relative h-8 w-8">
+                      <Image
+                        src="/brands/orange-money.svg"
+                        alt="Orange Money"
+                        fill
+                        className="object-contain"
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
