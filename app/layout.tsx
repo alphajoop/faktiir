@@ -5,6 +5,7 @@ import { Analytics } from '@vercel/analytics/next';
 import './globals.css';
 import { ThemeProvider } from '@/components/ui/theme-provider';
 import { Toaster } from '@/components/ui/sonner';
+import { Providers } from './providers';
 
 /*
 Police secondaire — Inter (Textes + “Faktiir”)
@@ -71,15 +72,17 @@ export default function RootLayout({
     <html lang="fr">
       <body className={`${inter.variable} ${manrope.variable} antialiased`}>
         <SessionProvider>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            {children}
-            <Toaster richColors />
-          </ThemeProvider>
+          <Providers>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              {children}
+              <Toaster richColors />
+            </ThemeProvider>
+          </Providers>
         </SessionProvider>
         <Analytics />
       </body>

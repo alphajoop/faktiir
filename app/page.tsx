@@ -154,7 +154,7 @@ export default function LandingPage() {
         </section>
 
         {/* Pricing */}
-        <section className="py-20">
+        <section className="bg-background/40 py-20 backdrop-blur-sm">
           <div className="mx-auto max-w-6xl px-4">
             <h2 className="text-foreground text-center text-3xl font-bold">
               Tarification simple
@@ -249,7 +249,14 @@ export default function LandingPage() {
         </section>
 
         {/* CTA */}
-        <section className="border-border bg-muted/30 border-t py-20">
+        <section className="bg-primary/5 relative overflow-hidden py-20">
+          <div
+            className="absolute inset-0 opacity-20"
+            style={{
+              background:
+                'radial-gradient(circle at 50% 50%, var(--primary) 0%, transparent 70%)',
+            }}
+          />
           <div className="mx-auto max-w-6xl px-4 text-center">
             <h2 className="text-foreground text-3xl font-bold">
               Prêt à simplifier votre facturation ?
@@ -267,7 +274,7 @@ export default function LandingPage() {
         </section>
 
         {/* Footer */}
-        <footer className="border-border border-t py-12">
+        <footer className="border-border bg-muted/40 border-t py-12 backdrop-blur-sm">
           <div className="mx-auto max-w-6xl px-4">
             <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
               {/* Brand */}
