@@ -149,7 +149,12 @@ export default function InvoicePage() {
                       <TableCell className="font-medium">
                         {invoice.invoiceNo}
                       </TableCell>
-                      <TableCell>{invoice.clientName}</TableCell>
+                      <TableCell
+                        className="max-w-[150px] truncate"
+                        title={invoice.clientName}
+                      >
+                        {invoice.clientName}
+                      </TableCell>
                       <TableCell className="font-semibold">
                         {invoice.total.toLocaleString()} CFA
                       </TableCell>
