@@ -18,6 +18,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { InputPassword } from '@/components/ui/input-password';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle, Loader } from 'lucide-react';
 
@@ -143,7 +144,7 @@ export function RegisterForm({
               <FormItem>
                 <FormLabel>Mot de passe</FormLabel>
                 <FormControl>
-                  <Input type="password" placeholder="********" {...field} />
+                  <InputPassword placeholder="********" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

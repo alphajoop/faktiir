@@ -18,6 +18,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { InputPassword } from '@/components/ui/input-password';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { AlertCircle, Loader } from 'lucide-react';
 import { toast } from 'sonner';
@@ -146,7 +147,7 @@ export function LoginForm({
                   </Link>
                 </div>
                 <FormControl>
-                  <Input type="password" placeholder="********" {...field} />
+                  <InputPassword placeholder="********" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
