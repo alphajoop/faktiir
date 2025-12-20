@@ -15,17 +15,11 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { useState } from 'react';
-import {
-  updateUserProfile,
-  updateCompanyLogo,
-  type UpdateProfileRequest,
-  type User,
-} from '@/lib/api/users';
-import { toast } from 'sonner';
-import { useSession } from 'next-auth/react';
 import { Loader2, Upload } from 'lucide-react';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
+import { useUpdateProfile, useUpdateLogo } from '@/hooks/use-user';
+import type { User } from '@/lib/api/users';
 import Image from 'next/image';
 
 const profileFormSchema = z.object({
@@ -42,11 +36,11 @@ interface ProfileFormProps {
 }
 
 export function ProfileForm({ user }: ProfileFormProps) {
-  const { data: session, update } = useSession();
-  const [loading, setLoading] = useState(false);
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
-  const [uploadingLogo, setUploadingLogo] = useState(false);
+
+  const updateProfileMutation = useUpdateProfile();
+  const updateLogoMutation = useUpdateLogo();
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
@@ -54,101 +48,58 @@ export function ProfileForm({ user }: ProfileFormProps) {
       name: user.name || '',
       address: user.address || '',
       phone: user.phone || '',
-      defaultCurrency: 'CFA',
+      defaultCurrency: user.defaultCurrency || 'CFA',
     },
   });
 
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 2 * 1024 * 1024) {
-        toast.error('Le fichier est trop volumineux', {
-          description: 'La taille maximale est de 2MB',
-        });
-        return;
-      }
+    if (!file) return;
 
-      if (!file.type.startsWith('image/')) {
-        toast.error('Type de fichier invalide', {
-          description: 'Veuillez sélectionner une image',
-        });
-        return;
-      }
-
-      setLogoFile(file);
-
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setLogoPreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+    // Vérifier la taille (max 2MB)
+    if (file.size > 2 * 1024 * 1024) {
+      form.setError('root', {
+        message: 'Le fichier est trop volumineux (max 2MB)',
+      });
+      return;
     }
+
+    // Vérifier le type
+    if (!file.type.startsWith('image/')) {
+      form.setError('root', {
+        message: 'Veuillez sélectionner une image',
+      });
+      return;
+    }
+
+    setLogoFile(file);
+
+    // Créer une prévisualisation
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setLogoPreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleUploadLogo = async () => {
     if (!logoFile) return;
-
-    try {
-      setUploadingLogo(true);
-      await updateCompanyLogo(session, logoFile);
-
-      toast.success('Logo mis à jour', {
-        description: 'Votre logo a été mis à jour avec succès',
-      });
-
-      setLogoFile(null);
-    } catch (error) {
-      console.error('Logo upload error:', error);
-      toast.error('Erreur', {
-        description:
-          error instanceof Error
-            ? error.message
-            : 'Une erreur est survenue lors de la mise à jour du logo',
-      });
-    } finally {
-      setUploadingLogo(false);
-    }
+    await updateLogoMutation.mutateAsync(logoFile);
+    setLogoFile(null);
   };
 
   const onSubmit = async (data: ProfileFormValues) => {
-    try {
-      setLoading(true);
-
-      const profileData: UpdateProfileRequest = {
-        name: data.name,
-        address: data.address || null,
-        phone: data.phone || null,
-        defaultCurrency: data.defaultCurrency,
-        companyLogo: user.companyLogo,
-      };
-
-      await updateUserProfile(session, profileData);
-
-      await update({
-        ...session,
-        user: {
-          ...session?.user,
-          name: data.name,
-          address: data.address || '',
-          phone: data.phone || '',
-        },
-      });
-
-      toast.success('Profil mis à jour', {
-        description: 'Vos informations ont été mises à jour avec succès',
-      });
-    } catch (error) {
-      console.error('Profile update error:', error);
-      toast.error('Erreur', {
-        description:
-          error instanceof Error
-            ? error.message
-            : 'Une erreur est survenue lors de la mise à jour',
-      });
-    } finally {
-      setLoading(false);
-    }
+    await updateProfileMutation.mutateAsync({
+      name: data.name,
+      address: data.address || null,
+      phone: data.phone || null,
+      defaultCurrency: data.defaultCurrency,
+      companyLogo: user.companyLogo,
+    });
   };
+
+  const isLoading = updateProfileMutation.isPending;
+  const isUploadingLogo = updateLogoMutation.isPending;
 
   return (
     <Form {...form}>
@@ -195,7 +146,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
                   onClick={() =>
                     document.getElementById('logo-upload')?.click()
                   }
-                  disabled={uploadingLogo}
+                  disabled={isUploadingLogo}
                 >
                   <Upload className="mr-2 h-4 w-4" />
                   Choisir un logo
@@ -205,9 +156,9 @@ export function ProfileForm({ user }: ProfileFormProps) {
                     type="button"
                     size="sm"
                     onClick={handleUploadLogo}
-                    disabled={uploadingLogo}
+                    disabled={isUploadingLogo}
                   >
-                    {uploadingLogo && (
+                    {isUploadingLogo && (
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     )}
                     Enregistrer le logo
@@ -311,12 +262,12 @@ export function ProfileForm({ user }: ProfileFormProps) {
             type="button"
             variant="outline"
             onClick={() => form.reset()}
-            disabled={loading}
+            disabled={isLoading}
           >
             Annuler
           </Button>
-          <Button type="submit" disabled={loading}>
-            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+          <Button type="submit" disabled={isLoading}>
+            {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Enregistrer les modifications
           </Button>
         </div>

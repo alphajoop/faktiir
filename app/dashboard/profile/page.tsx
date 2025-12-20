@@ -1,8 +1,8 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { Loader2 } from 'lucide-react';
+import { useSession } from 'next-auth/react';
+import { Loader2, AlertCircleIcon } from 'lucide-react';
 import {
   Card,
   CardContent,
@@ -12,27 +12,14 @@ import {
 } from '@/components/ui/card';
 import { ProfileForm } from '@/components/dashboard/profile-form';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AlertCircleIcon } from 'lucide-react';
-import { getCurrentUser, type User } from '@/lib/api/users';
-import { useEffect, useState } from 'react';
+import { useUser } from '@/hooks/use-user';
 
 export default function ProfilePage() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    if (status === 'authenticated') {
-      getCurrentUser(session)
-        .then(setUser)
-        .catch(console.error)
-        .finally(() => setLoading(false));
-    } else if (status === 'unauthenticated') {
-      router.push('/login');
-    }
-  }, [session, status, router]);
+  const { user, isLoading, error } = useUser();
 
-  if (status === 'loading' || loading) {
+  if (status === 'loading' || isLoading) {
     return (
       <div className="flex h-[calc(80vh-4rem)] items-center justify-center">
         <Loader2 className="text-primary h-14 w-14 animate-spin" />
@@ -43,6 +30,22 @@ export default function ProfilePage() {
   if (status === 'unauthenticated') {
     router.push('/login');
     return null;
+  }
+
+  if (error) {
+    return (
+      <div className="flex h-[calc(80vh-4rem)] items-center justify-center">
+        <Alert variant="destructive" className="w-[calc(80vh-4rem)]">
+          <AlertCircleIcon />
+          <AlertTitle>Erreur</AlertTitle>
+          <AlertDescription>
+            {error instanceof Error
+              ? error.message
+              : 'Impossible de charger les informations du profil'}
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
   }
 
   return (
