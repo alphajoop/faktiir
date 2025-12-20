@@ -43,7 +43,7 @@
     "react-hook-form": "^7.68.0",
     "sonner": "^2.0.7",
     "tailwind-merge": "^3.4.0",
-    "zod": "^4.1.13"
+    "zod": "^4.2.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.18",
