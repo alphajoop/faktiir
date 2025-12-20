@@ -100,9 +100,11 @@ export default function DashboardPage() {
             Gérez vos factures de façon simple et locale.
           </p>
         </div>
-        <Button className="gap-2">
-          <Plus className="h-4 w-4" />
-          Nouvelle facture
+        <Button className="gap-2" asChild>
+          <Link href="/dashboard/invoices/new" className="flex items-center">
+            <Plus className="h-4 w-4" />
+            Nouvelle facture
+          </Link>
         </Button>
       </div>
 

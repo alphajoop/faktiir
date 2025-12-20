@@ -1,4 +1,11 @@
-import { BarChart2, File, Plus, Settings } from 'lucide-react';
+import {
+  BarChart2,
+  CreditCard,
+  File,
+  Plus,
+  Settings,
+  User,
+} from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
 export interface MenuItem {
@@ -24,9 +31,19 @@ export const getMenuItems = (): MenuItem[] => [
     icon: File,
   },
   {
+    title: 'Profil',
+    url: '/dashboard/profile',
+    icon: User,
+  },
+  {
     title: 'Paramètres',
     url: '/dashboard/settings',
     icon: Settings,
+  },
+  {
+    title: 'Facturation',
+    url: '/dashboard/billing',
+    icon: CreditCard,
   },
 ];
 
@@ -34,9 +51,8 @@ export const routeNameMapping: Record<string, string> = {
   '': 'Tableau de bord',
   dashboard: 'Tableau de bord',
   invoices: 'Factures',
-  'invoices/new': 'Nouvelle facture',
-  'invoices/:id': 'Facture',
-  'invoices/:id/edit': 'Modifier facture',
-  'invoices/:id/delete': 'Supprimer facture',
+  new: 'Nouvelle facture',
+  profile: 'Profil',
   settings: 'Paramètres',
+  billing: 'Facturation',
 };
