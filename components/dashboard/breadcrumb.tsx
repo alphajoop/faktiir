@@ -11,10 +11,15 @@ import {
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
 import { LayoutDashboard } from 'lucide-react';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { routeNameMapping } from '@/data/navigation';
 
 export default function DynamicBreadcrumb() {
   const pathname = usePathname();
+  const isMobile = useIsMobile();
+
+  // Hide breadcrumb on mobile to prevent overflow
+  if (isMobile) return null;
 
   if (pathname === '/login' || pathname === '/register') {
     return null;
