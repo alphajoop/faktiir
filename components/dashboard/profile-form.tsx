@@ -138,7 +138,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
                 accept="image/*"
                 onChange={handleLogoChange}
               />
-              <div className="flex gap-2">
+              <div className="flex w-full flex-col gap-2 sm:flex-row">
                 <Button
                   type="button"
                   variant="outline"
@@ -147,6 +147,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
                     document.getElementById('logo-upload')?.click()
                   }
                   disabled={isUploadingLogo}
+                  className="w-full sm:w-auto"
                 >
                   <Upload className="mr-2 h-4 w-4" />
                   Choisir un logo
@@ -157,11 +158,12 @@ export function ProfileForm({ user }: ProfileFormProps) {
                     size="sm"
                     onClick={handleUploadLogo}
                     disabled={isUploadingLogo}
+                    className="w-full sm:w-auto"
                   >
                     {isUploadingLogo && (
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     )}
-                    Enregistrer le logo
+                    Enregistrer
                   </Button>
                 )}
               </div>
@@ -257,16 +259,21 @@ export function ProfileForm({ user }: ProfileFormProps) {
           </div>
         </div>
 
-        <div className="flex justify-end gap-4">
+        <div className="flex flex-col-reverse gap-4 sm:flex-row sm:justify-end">
           <Button
             type="button"
             variant="outline"
             onClick={() => form.reset()}
             disabled={isLoading}
+            className="w-full sm:w-auto"
           >
             Annuler
           </Button>
-          <Button type="submit" disabled={isLoading}>
+          <Button
+            type="submit"
+            disabled={isLoading}
+            className="w-full sm:w-auto"
+          >
             {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
             Enregistrer les modifications
           </Button>

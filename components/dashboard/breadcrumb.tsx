@@ -80,7 +80,7 @@ export default function DynamicBreadcrumb() {
           return (
             <React.Fragment key={segment}>
               <BreadcrumbSeparator className="mx-0 sm:mx-2" />
-              <BreadcrumbItem className="max-w-[120px] overflow-hidden text-ellipsis">
+              <BreadcrumbItem className="max-w-30 overflow-hidden text-ellipsis">
                 {isLastSegment ? (
                   <BreadcrumbPage className="truncate">
                     {segmentName}

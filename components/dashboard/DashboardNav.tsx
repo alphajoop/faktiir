@@ -44,7 +44,7 @@ export default function DashboardNav() {
                   <Image
                     src={user.companyLogo}
                     alt="Logo"
-                    className="h-full w-full rounded-lg object-contain"
+                    className="h-full w-full rounded-lg object-cover"
                     fill
                   />
                 ) : (

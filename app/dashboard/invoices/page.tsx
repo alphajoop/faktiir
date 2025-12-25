@@ -45,6 +45,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import Link from 'next/link';
 
 export default function InvoicePage() {
   const { data: session, status } = useSession();
@@ -112,9 +113,11 @@ export default function InvoicePage() {
             Gérez vos factures de façon simple et locale.
           </p>
         </div>
-        <Button className="gap-2">
-          <Plus className="h-4 w-4" />
-          Nouvelle facture
+        <Button className="gap-2" asChild>
+          <Link href="/dashboard/invoices/new" className="flex items-center">
+            <Plus className="h-4 w-4" />
+            Nouvelle facture
+          </Link>
         </Button>
       </div>
 
@@ -150,7 +153,7 @@ export default function InvoicePage() {
                         {invoice.invoiceNo}
                       </TableCell>
                       <TableCell
-                        className="max-w-[150px] truncate"
+                        className="max-w-37.5 truncate"
                         title={invoice.clientName}
                       >
                         {invoice.clientName}
@@ -212,7 +215,7 @@ export default function InvoicePage() {
                       setPage(1); // Reset à la première page lors du changement de limite
                     }}
                   >
-                    <SelectTrigger className="h-8 w-[70px]">
+                    <SelectTrigger className="h-8 w-17.5">
                       <SelectValue placeholder={pagination.limit} />
                     </SelectTrigger>
                     <SelectContent>

@@ -23,8 +23,9 @@ import { useSidebar } from '@/components/ui/sidebar';
 export function SidebarComponent() {
   const { data: session } = useSession();
   const user = session?.user;
-  const { isMobile } = useSidebar();
+  const { isMobile, setOpenMobile } = useSidebar();
   const handleSignOut = () => {
+    if (isMobile) setOpenMobile(false);
     signOut({ callbackUrl: '/' });
   };
   return (
@@ -55,7 +56,10 @@ export function SidebarComponent() {
               {getMenuItems().map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild tooltip={item.title}>
-                    <Link href={item.url}>
+                    <Link
+                      href={item.url}
+                      onClick={() => isMobile && setOpenMobile(false)}
+                    >
                       <item.icon className="mr-2 h-4 w-4" />
                       <span>{item.title}</span>
                     </Link>
