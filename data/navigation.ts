@@ -1,9 +1,10 @@
 import {
   BarChart2,
-  CreditCard,
+  //CreditCard,
   File,
   Plus,
-  Settings,
+  //Settings,
+  Sparkles,
   User,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
@@ -36,6 +37,11 @@ export const getMenuItems = (): MenuItem[] => [
     icon: User,
   },
   {
+    title: 'Abonnement',
+    url: '/dashboard/subscription',
+    icon: Sparkles,
+  },
+  /*{
     title: 'Paramètres',
     url: '/dashboard/settings',
     icon: Settings,
@@ -44,7 +50,7 @@ export const getMenuItems = (): MenuItem[] => [
     title: 'Facturation',
     url: '/dashboard/billing',
     icon: CreditCard,
-  },
+  },*/
 ];
 
 export const routeNameMapping: Record<string, string> = {
@@ -53,6 +59,7 @@ export const routeNameMapping: Record<string, string> = {
   invoices: 'Factures',
   new: 'Nouvelle facture',
   profile: 'Profil',
-  settings: 'Paramètres',
-  billing: 'Facturation',
+  subscription: 'Abonnement',
+  //settings: 'Paramètres',
+  //billing: 'Facturation',
 };

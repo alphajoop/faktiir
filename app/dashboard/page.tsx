@@ -32,20 +32,20 @@ import { useInvoices } from '@/hooks/use-invoices';
 import Link from 'next/link';
 import { DeleteConfirmationDialog } from '@/components/shared/delete-confirmation-dialog';
 import { PDFViewerDialog } from '@/components/shared/pdf-viewer-dialog';
+import { InvoiceLimitBanner } from '@/components/dashboard/invoice-limit-banner';
+import { useSubscription } from '@/hooks/use-subscription';
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
+  const { data: subscription } = useSubscription();
   const {
     invoices,
     recentInvoices,
-    pagination,
     isLoading,
     error,
     handleViewPDF,
     handleDownloadPDF,
     handleDelete,
-    setPage,
-    setLimit,
     deleteDialogOpen,
     confirmDelete,
     cancelDelete,
@@ -107,6 +107,15 @@ export default function DashboardPage() {
           </Link>
         </Button>
       </div>
+
+      {/* Bannière de limite */}
+      {subscription && (
+        <InvoiceLimitBanner
+          isSubscribed={subscription.isSubscribed}
+          monthlyUsed={subscription.monthlyUsed}
+          monthlyQuota={subscription.monthlyQuota}
+        />
+      )}
 
       <InvoiceStats invoices={invoices} />
 

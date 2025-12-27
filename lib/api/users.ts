@@ -12,6 +12,10 @@ export interface User {
   defaultCurrency: string;
   createdAt: string;
   updatedAt: string;
+  isSubscribed: boolean;
+  monthlyUsed: number;
+  monthlyQuota: number;
+  invoiceMonthNumber: number;
 }
 
 export async function getCurrentUser(session: Session | null): Promise<User> {

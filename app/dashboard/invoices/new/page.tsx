@@ -13,7 +13,7 @@ import {
 import { InvoiceForm } from '@/components/dashboard/invoice-form';
 
 export default function CreateInvoicePage() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
 
   if (status === 'loading') {
