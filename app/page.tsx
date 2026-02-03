@@ -1,4 +1,3 @@
-'use client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import FaktiirLogo from '@/components/icons/faktiir-logo';
@@ -21,39 +20,11 @@ import {
 } from 'lucide-react';
 import { ModeToggle } from '@/components/ui/mode-toggle';
 import Image from 'next/image';
-import { useRef } from 'react';
-import { useGSAP } from '@gsap/react';
-import gsap from 'gsap';
-import { ScrollSmoother } from 'gsap/ScrollSmoother';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-// Register GSAP plugins
-gsap.registerPlugin(ScrollTrigger, ScrollSmoother);
 
 export default function LandingPage() {
-  const main = useRef<HTMLDivElement>(null);
-  const smoother = useRef<ScrollSmoother | null>(null);
-
-  useGSAP(
-    () => {
-      smoother.current = ScrollSmoother.create({
-        wrapper: '#smooth-wrapper',
-        content: '#smooth-content',
-        smooth: 1.5,
-        effects: true,
-        smoothTouch: 0.1,
-      });
-    },
-    { scope: main },
-  );
-
   return (
-    <div
-      ref={main}
-      id="smooth-wrapper"
-      className="bg-background relative min-h-screen overflow-hidden"
-    >
-      <div id="smooth-content">
+    <div className="bg-background relative min-h-screen overflow-hidden">
+      <div>
         {/* Radial Glow Background */}
         <div
           className="pointer-events-none absolute inset-0 z-0"
@@ -88,7 +59,7 @@ export default function LandingPage() {
           </header>
 
           {/* Hero */}
-          <section className="py-20" data-speed="0.9">
+          <section className="py-20">
             <div className="mx-auto max-w-6xl px-4 text-center">
               <div className="bg-primary/10 text-primary mx-auto inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm">
                 <Zap className="h-4 w-4" />
@@ -118,10 +89,7 @@ export default function LandingPage() {
           </section>
 
           {/* Features */}
-          <section
-            className="border-border bg-muted/30 border-t py-20"
-            data-speed="1"
-          >
+          <section className="border-border bg-muted/30 border-t py-20">
             <div className="mx-auto max-w-6xl px-4">
               <h2 className="text-foreground text-center text-3xl font-bold">
                 Tout ce dont vous avez besoin
@@ -188,10 +156,7 @@ export default function LandingPage() {
           </section>
 
           {/* Pricing */}
-          <section
-            className="bg-background/40 py-20 backdrop-blur-sm"
-            data-speed="1.1"
-          >
+          <section className="bg-background/40 py-20 backdrop-blur-sm">
             <div className="mx-auto max-w-6xl px-4">
               <h2 className="text-foreground text-center text-3xl font-bold">
                 Tarification simple
@@ -289,10 +254,7 @@ export default function LandingPage() {
           </section>
 
           {/* CTA */}
-          <section
-            className="bg-primary/5 relative overflow-hidden py-20"
-            data-speed="1.2"
-          >
+          <section className="bg-primary/5 relative overflow-hidden py-20">
             <div
               className="absolute inset-0 opacity-20"
               style={{
