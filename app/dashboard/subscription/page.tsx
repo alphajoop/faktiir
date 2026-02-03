@@ -3,6 +3,7 @@
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Loader2, CheckCircle, Sparkles, Zap } from 'lucide-react';
+import { useState } from 'react';
 import {
   Card,
   CardContent,
@@ -15,11 +16,14 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useSubscription } from '@/hooks/use-subscription';
 import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
+import { toast } from 'sonner';
+import { checkoutSubscription } from '@/lib/api';
 
 export default function SubscriptionPage() {
-  const { status } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
   const { data: subscription, isLoading, error } = useSubscription();
+  const [isCheckoutLoading, setIsCheckoutLoading] = useState(false);
 
   if (status === 'loading' || isLoading) {
     return (
@@ -48,6 +52,51 @@ export default function SubscriptionPage() {
   }
 
   const isPremium = subscription?.isSubscribed === true;
+  const premiumPlanId = process.env.NEXT_PUBLIC_PREMIUM_PLAN_ID;
+
+  const handleCheckout = async () => {
+    if (!session?.accessToken) {
+      toast.error('Non authentifié', {
+        description: 'Veuillez vous reconnecter pour continuer.',
+      });
+      router.push('/login');
+      return;
+    }
+
+    if (!premiumPlanId) {
+      toast.error('Configuration manquante', {
+        description:
+          "Le plan Premium n'est pas configuré (NEXT_PUBLIC_PREMIUM_PLAN_ID).",
+      });
+      return;
+    }
+
+    setIsCheckoutLoading(true);
+    try {
+      const json = await checkoutSubscription(session, {
+        planId: premiumPlanId,
+      });
+
+      if (json.paymentUrl) {
+        window.location.href = json.paymentUrl;
+        return;
+      }
+
+      toast.error('Réponse invalide', {
+        description:
+          'Impossible de démarrer le paiement. Réessayez dans un instant.',
+      });
+    } catch (e) {
+      toast.error('Erreur de paiement', {
+        description:
+          e instanceof Error
+            ? e.message
+            : 'Impossible de démarrer le paiement.',
+      });
+    } finally {
+      setIsCheckoutLoading(false);
+    }
+  };
 
   return (
     <div className="space-y-8 md:space-y-10">
@@ -167,9 +216,18 @@ export default function SubscriptionPage() {
               </Badge>
             ) : (
               <div className="space-y-3">
-                <Button className="w-full gap-2" size="lg">
-                  <Sparkles className="h-4 w-4" />
-                  Passer à Premium
+                <Button
+                  className="w-full gap-2"
+                  size="lg"
+                  onClick={handleCheckout}
+                  disabled={isCheckoutLoading}
+                >
+                  {isCheckoutLoading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Sparkles className="h-4 w-4" />
+                  )}
+                  {isCheckoutLoading ? 'Redirection...' : 'Passer à Premium'}
                 </Button>
                 <p className="text-muted-foreground text-center text-xs">
                   Paiement sécurisé via Wave ou Orange Money
