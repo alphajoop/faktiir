@@ -200,37 +200,48 @@
   }
 }
 
-/* Custom animation keyframes */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes pulseGlow {
-  0%,
-  100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.8;
-    transform: scale(1.05);
-  }
-}
-
-/* Utility classes for animations */
 @layer utilities {
-  .animate-fade-in {
-    animation: fadeIn 0.8s ease-out forwards;
+  /* Emil Kowalski compliant entrance animations */
+  .animate-in-fade-up {
+    opacity: 0;
+    transform: translateY(24px);
+    animation: fadeInUp 0.6s cubic-bezier(0.32, 0.72, 0, 1) forwards;
   }
 
-  .animate-pulse-glow {
-    animation: pulseGlow 2s ease-in-out infinite;
+  .animate-in-fade-up-delay-100 {
+    opacity: 0;
+    transform: translateY(24px);
+    animation: fadeInUp 0.6s cubic-bezier(0.32, 0.72, 0, 1) 0.1s forwards;
+  }
+
+  .animate-in-fade-up-delay-200 {
+    opacity: 0;
+    transform: translateY(24px);
+    animation: fadeInUp 0.6s cubic-bezier(0.32, 0.72, 0, 1) 0.2s forwards;
+  }
+
+  .animate-in-fade-up-delay-300 {
+    opacity: 0;
+    transform: translateY(24px);
+    animation: fadeInUp 0.6s cubic-bezier(0.32, 0.72, 0, 1) 0.3s forwards;
+  }
+
+  @keyframes fadeInUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-in-fade-up,
+    .animate-in-fade-up-delay-100,
+    .animate-in-fade-up-delay-200,
+    .animate-in-fade-up-delay-300 {
+      opacity: 1;
+      transform: translateY(0);
+      animation: none;
+    }
   }
 }

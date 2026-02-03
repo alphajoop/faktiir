@@ -20,10 +20,11 @@ import {
 } from 'lucide-react';
 import { ModeToggle } from '@/components/ui/mode-toggle';
 import Image from 'next/image';
+import { AnimateSection } from '@/components/animate-section';
 
 export default function LandingPage() {
   return (
-    <div className="bg-background relative min-h-screen overflow-hidden">
+    <main className="bg-background relative min-h-screen overflow-hidden">
       <div>
         {/* Radial Glow Background */}
         <div
@@ -45,21 +46,21 @@ export default function LandingPage() {
                 <div className="hidden md:block">
                   <ModeToggle />
                 </div>
-                <Link href="/login">
-                  <Button variant="ghost" className="gap-2">
+                <Button asChild variant="ghost" className="gap-2">
+                  <Link href="/login">
                     <User className="h-4 w-4 md:hidden" />
                     <span className="hidden md:inline">Connexion</span>
-                  </Button>
-                </Link>
-                <Link href="/register">
-                  <Button>Commencer</Button>
-                </Link>
+                  </Link>
+                </Button>
+                <Button asChild>
+                  <Link href="/register">Commencer</Link>
+                </Button>
               </div>
             </div>
           </header>
 
           {/* Hero */}
-          <section className="py-20">
+          <section className="animate-in-fade-up py-20">
             <div className="mx-auto max-w-6xl px-4 text-center">
               <div className="bg-primary/10 text-primary mx-auto inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm">
                 <Zap className="h-4 w-4" />
@@ -75,12 +76,12 @@ export default function LandingPage() {
                 requis.
               </p>
               <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
-                <Link href="/register">
-                  <Button size="lg" className="gap-2">
+                <Button asChild size="lg" className="gap-2">
+                  <Link href="/register">
                     Créer mon compte gratuit
                     <ArrowRight className="h-4 w-4" />
-                  </Button>
-                </Link>
+                  </Link>
+                </Button>
                 <p className="text-muted-foreground text-sm">
                   3 factures gratuites / mois
                 </p>
@@ -89,7 +90,10 @@ export default function LandingPage() {
           </section>
 
           {/* Features */}
-          <section className="border-border bg-muted/30 border-t py-20">
+          <AnimateSection
+            animationClass="animate-in-fade-up-delay-100"
+            className="border-border bg-muted/30 border-t py-20"
+          >
             <div className="mx-auto max-w-6xl px-4">
               <h2 className="text-foreground text-center text-3xl font-bold">
                 Tout ce dont vous avez besoin
@@ -136,8 +140,23 @@ export default function LandingPage() {
                     description:
                       'Pas besoin de registre de commerce, créez votre compte en 30 secondes',
                   },
-                ].map((feature) => (
-                  <Card key={feature.title} className="border-border">
+                ].map((feature, index) => (
+                  <Card
+                    key={feature.title}
+                    className={`border-border transition-transform duration-200 ease-out will-change-transform hover:-translate-y-1 motion-reduce:transform-none motion-reduce:transition-none ${
+                      index === 0
+                        ? 'animate-in-fade-up-delay-200'
+                        : index === 1
+                          ? 'animate-in-fade-up-delay-300'
+                          : index === 2
+                            ? 'animate-in-fade-up-delay-300'
+                            : index === 3
+                              ? 'animate-in-fade-up-delay-300'
+                              : index === 4
+                                ? 'animate-in-fade-up-delay-300'
+                                : 'animate-in-fade-up-delay-300'
+                    }`}
+                  >
                     <CardContent className="p-6">
                       <div className="bg-primary/10 flex h-12 w-12 items-center justify-center rounded-lg">
                         <feature.icon className="text-primary h-6 w-6" />
@@ -153,10 +172,13 @@ export default function LandingPage() {
                 ))}
               </div>
             </div>
-          </section>
+          </AnimateSection>
 
           {/* Pricing */}
-          <section className="bg-background/40 py-20 backdrop-blur-sm">
+          <AnimateSection
+            animationClass="animate-in-fade-up-delay-200"
+            className="bg-background/40 py-20 backdrop-blur-sm"
+          >
             <div className="mx-auto max-w-6xl px-4">
               <h2 className="text-foreground text-center text-3xl font-bold">
                 Tarification simple
@@ -167,7 +189,7 @@ export default function LandingPage() {
 
               <div className="mx-auto mt-12 grid max-w-4xl gap-6 lg:grid-cols-2">
                 {/* Free Plan */}
-                <Card className="border-border">
+                <Card className="border-border transition-transform duration-200 ease-out will-change-transform hover:-translate-y-1 motion-reduce:transform-none motion-reduce:transition-none">
                   <CardContent className="p-8">
                     <h3 className="text-foreground text-xl font-semibold">
                       Gratuit
@@ -195,19 +217,18 @@ export default function LandingPage() {
                         </li>
                       ))}
                     </ul>
-                    <Link href="/register" className="mt-8 block">
-                      <Button
-                        variant="outline"
-                        className="w-full bg-transparent"
-                      >
-                        Commencer gratuitement
-                      </Button>
-                    </Link>
+                    <Button
+                      asChild
+                      variant="outline"
+                      className="mt-8 w-full bg-transparent"
+                    >
+                      <Link href="/register">Commencer gratuitement</Link>
+                    </Button>
                   </CardContent>
                 </Card>
 
                 {/* Premium Plan */}
-                <Card className="border-primary bg-primary/5 relative">
+                <Card className="border-primary bg-primary/5 relative transition-transform duration-200 ease-out will-change-transform hover:-translate-y-1 motion-reduce:transform-none motion-reduce:transition-none">
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                     <span className="bg-primary text-primary-foreground rounded-full px-3 py-1 text-xs font-medium">
                       Populaire
@@ -241,9 +262,9 @@ export default function LandingPage() {
                         </li>
                       ))}
                     </ul>
-                    <Link href="/register" className="mt-8 block">
-                      <Button className="w-full">Passer à Premium</Button>
-                    </Link>
+                    <Button asChild className="mt-8 w-full">
+                      <Link href="/register">Passer à Premium</Link>
+                    </Button>
                     <p className="text-muted-foreground mt-4 text-center text-xs">
                       Paiement via Wave ou Orange Money
                     </p>
@@ -251,10 +272,13 @@ export default function LandingPage() {
                 </Card>
               </div>
             </div>
-          </section>
+          </AnimateSection>
 
           {/* CTA */}
-          <section className="bg-primary/5 relative overflow-hidden py-20">
+          <AnimateSection
+            animationClass="animate-in-fade-up-delay-300"
+            className="bg-primary/5 relative overflow-hidden py-20"
+          >
             <div
               className="absolute inset-0 opacity-20"
               style={{
@@ -262,24 +286,21 @@ export default function LandingPage() {
                   'radial-gradient(circle at 50% 50%, var(--primary) 0%, transparent 70%)',
               }}
             />
-            <div
-              className="mx-auto max-w-6xl px-4 text-center"
-              style={{ pointerEvents: 'auto' }}
-            >
+            <div className="relative z-10 mx-auto max-w-6xl px-4 text-center">
               <h2 className="text-foreground text-3xl font-bold">
                 Prêt à simplifier votre facturation ?
               </h2>
               <p className="text-muted-foreground mx-auto mt-4 max-w-xl">
                 Rejoignez des centaines de freelances qui utilisent déjà Faktiir
               </p>
-              <Link href="/register">
-                <Button size="lg" className="mt-8 gap-2">
+              <Button asChild size="lg" className="mt-8 gap-2">
+                <Link href="/register">
                   Créer mon compte gratuit
                   <ArrowRight className="h-4 w-4" />
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             </div>
-          </section>
+          </AnimateSection>
 
           {/* Footer */}
           <footer className="border-border bg-muted/40 border-t py-12 backdrop-blur-sm">
@@ -298,7 +319,7 @@ export default function LandingPage() {
                       href="https://facebook.com"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="bg-muted hover:bg-primary hover:text-primary-foreground flex h-9 w-9 items-center justify-center rounded-full transition-colors"
+                      className="bg-muted hover:bg-primary hover:text-primary-foreground flex h-9 w-9 items-center justify-center rounded-full transition duration-200 ease-out will-change-transform hover:scale-[1.05] active:scale-[0.97] motion-reduce:transform-none motion-reduce:transition-none"
                     >
                       <Facebook className="h-4 w-4" />
                     </a>
@@ -306,7 +327,7 @@ export default function LandingPage() {
                       href="https://instagram.com"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="bg-muted hover:bg-primary hover:text-primary-foreground flex h-9 w-9 items-center justify-center rounded-full transition-colors"
+                      className="bg-muted hover:bg-primary hover:text-primary-foreground flex h-9 w-9 items-center justify-center rounded-full transition duration-200 ease-out will-change-transform hover:scale-[1.05] active:scale-[0.97] motion-reduce:transform-none motion-reduce:transition-none"
                     >
                       <Instagram className="h-4 w-4" />
                     </a>
@@ -314,7 +335,7 @@ export default function LandingPage() {
                       href="https://twitter.com"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="bg-muted hover:bg-primary hover:text-primary-foreground flex h-9 w-9 items-center justify-center rounded-full transition-colors"
+                      className="bg-muted hover:bg-primary hover:text-primary-foreground flex h-9 w-9 items-center justify-center rounded-full transition duration-200 ease-out will-change-transform hover:scale-[1.05] active:scale-[0.97] motion-reduce:transform-none motion-reduce:transition-none"
                     >
                       <Twitter className="h-4 w-4" />
                     </a>
@@ -322,7 +343,7 @@ export default function LandingPage() {
                       href="https://linkedin.com"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="bg-muted hover:bg-primary hover:text-primary-foreground flex h-9 w-9 items-center justify-center rounded-full transition-colors"
+                      className="bg-muted hover:bg-primary hover:text-primary-foreground flex h-9 w-9 items-center justify-center rounded-full transition duration-200 ease-out will-change-transform hover:scale-[1.05] active:scale-[0.97] motion-reduce:transform-none motion-reduce:transition-none"
                     >
                       <Linkedin className="h-4 w-4" />
                     </a>
@@ -470,6 +491,6 @@ export default function LandingPage() {
           </footer>
         </div>
       </div>
-    </div>
+    </main>
   );
 }
