@@ -1,5 +1,6 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
-import { Session } from 'next-auth';
+
+import type { Session } from 'next-auth';
 
 export interface CheckoutSubscriptionDto {
   planId: string;

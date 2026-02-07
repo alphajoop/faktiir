@@ -1,4 +1,4 @@
-import NextAuth, { NextAuthConfig, User } from 'next-auth';
+import NextAuth, { type NextAuthConfig, type User } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { login, verifyOtp } from './api';
 

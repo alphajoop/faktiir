@@ -11,12 +11,13 @@ export function renderSchema(schema: object): string {
  * Composant React pour les schemas (optionnel)
  */
 export function JsonLd({ data }: { data: object }) {
-  return React.createElement('script', {
-    type: 'application/ld+json',
-    dangerouslySetInnerHTML: {
-      __html: renderSchema(data),
+  return React.createElement(
+    'script',
+    {
+      type: 'application/ld+json',
     },
-  });
+    renderSchema(data),
+  );
 }
 
 /**

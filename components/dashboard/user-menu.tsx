@@ -1,7 +1,15 @@
 'use client';
 
-import { LogOut, Bell, CreditCard, BadgeCheck, Sparkles } from 'lucide-react';
-import { SidebarMenuButton } from '@/components/ui/sidebar';
+import {
+  BadgeCheck,
+  Bell,
+  ChevronsUpDown,
+  CreditCard,
+  LogOut,
+  Sparkles,
+} from 'lucide-react';
+import type { User } from 'next-auth';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,9 +19,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { ChevronsUpDown } from 'lucide-react';
-import { User } from 'next-auth';
+import { SidebarMenuButton } from '@/components/ui/sidebar';
 
 export function UserMenu({
   user,

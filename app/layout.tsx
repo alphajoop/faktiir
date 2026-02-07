@@ -1,12 +1,13 @@
+import { Analytics } from '@vercel/analytics/next';
 import type { Metadata } from 'next';
 import { Inter, Manrope } from 'next/font/google';
 import { SessionProvider } from 'next-auth/react';
-import { Analytics } from '@vercel/analytics/next';
 import './globals.css';
-import { ThemeProvider } from '@/components/ui/theme-provider';
+import { JsonLd } from '@/components/shared/json-ld';
 import { Toaster } from '@/components/ui/sonner';
-import { Providers } from './providers';
+import { ThemeProvider } from '@/components/ui/theme-provider';
 import { defaultMetadata, organizationSchema, websiteSchema } from '@/lib/seo';
+import { Providers } from './providers';
 
 /*
 Police secondaire — Inter (Textes + “Faktiir”)
@@ -69,18 +70,8 @@ export default function RootLayout({
     <html lang="fr">
       <head>
         {/* Données structurées JSON-LD */}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(organizationSchema),
-          }}
-        />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify(websiteSchema),
-          }}
-        />
+        <JsonLd data={organizationSchema} />
+        <JsonLd data={websiteSchema} />
       </head>
       <body className={`${inter.variable} ${manrope.variable} antialiased`}>
         <SessionProvider>

@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 
 type FaktiirLogoProps = React.SVGProps<SVGSVGElement> & {
   className?: string;
@@ -10,7 +10,10 @@ const FaktiirLogo: React.FC<FaktiirLogoProps> = ({ className, ...props }) => (
     viewBox="0 0 1895.75 433.66"
     className={className}
     {...props}
+    role="img"
+    aria-label="Faktiir Logo"
   >
+    <title>Faktiir Logo</title>
     <path
       fill="currentColor"
       d="m254.12,26.4v64.72H87.46v102.52h127.72v63.57h-127.72v168.96H7.27V26.4h246.85Z"

@@ -1,8 +1,8 @@
 'use client';
 
+import { BarChart2, DollarSign, FileText, Landmark } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import type { Invoice } from '@/types/invoice';
-import { DollarSign, FileText, BarChart2, Landmark } from 'lucide-react';
 
 interface InvoiceStatsProps {
   invoices: Invoice[];
@@ -43,8 +43,11 @@ export function InvoiceStats({ invoices }: InvoiceStatsProps) {
 
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-      {stats.map((stat, index) => (
-        <Card key={index} className="border-border bg-card overflow-hidden">
+      {stats.map((stat) => (
+        <Card
+          key={stat.label}
+          className="border-border bg-card overflow-hidden"
+        >
           <CardHeader className="pb-3">
             <div className="flex items-center justify-between">
               <CardTitle className="text-muted-foreground text-sm font-medium">

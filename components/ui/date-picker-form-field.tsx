@@ -1,17 +1,17 @@
 'use client';
 
-import { Controller, Control, FieldValues } from 'react-hook-form';
+import { format } from 'date-fns';
+import { fr } from 'date-fns/locale';
+import { CalendarIcon } from 'lucide-react';
+import { type Control, Controller, type FieldValues } from 'react-hook-form';
+import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
+import { Label } from '@/components/ui/label';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import { Button } from '@/components/ui/button';
-import { Calendar } from '@/components/ui/calendar';
-import { fr } from 'date-fns/locale';
-import { format } from 'date-fns';
-import { CalendarIcon } from 'lucide-react';
-import { Label } from '@/components/ui/label';
 
 type Props<TFieldValues extends FieldValues> = {
   control: Control<TFieldValues>;

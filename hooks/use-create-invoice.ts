@@ -1,13 +1,13 @@
 'use client';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { toast } from 'sonner';
-import { CreateInvoice } from '@/types/invoice';
-import { createInvoice } from '@/lib/api/invoices';
+import { useSession } from 'next-auth/react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 import { useSubscription } from '@/hooks/use-subscription';
+import { createInvoice } from '@/lib/api/invoices';
+import type { CreateInvoice } from '@/types/invoice';
 
 type CreateInvoiceData = Omit<
   CreateInvoice,
@@ -78,8 +78,8 @@ export function useCreateInvoice() {
         const match = error.message?.match(/(\d+)\/(\d+)/);
         if (match) {
           setLimitInfo({
-            monthlyUsed: parseInt(match[1]),
-            monthlyQuota: parseInt(match[2]),
+            monthlyUsed: parseInt(match[1], 10),
+            monthlyQuota: parseInt(match[2], 10),
             isSubscribed: false,
           });
         } else if (subscription) {

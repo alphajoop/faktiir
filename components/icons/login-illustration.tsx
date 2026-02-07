@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 
 type LoginIllustrationProps = React.SVGProps<SVGSVGElement> & {
   className?: string;
@@ -11,14 +11,17 @@ const LoginIllustration: React.FC<LoginIllustrationProps> = ({
   return (
     <svg
       width="537"
-      height="447"
-      viewBox="0 0 537 447"
+      height="600"
+      viewBox="0 0 537 600"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       style={{ width: '100%', height: '100%' }}
       className={className}
+      role="img"
+      aria-label="Login illustration"
       {...props}
     >
+      <title>Login illustration</title>
       <g clip-path="url(#clip0_35_987)">
         <path
           d="M346.916 177.364C370.854 156.793 383.201 125.041 385.422 93.557C386.419 79.42 385.457 64.754 379.386 51.948C375.041 42.782 368.275 34.978 361.047 27.862C350.531 17.509 338.494 8.14901 324.385 3.82401C313.91 0.613008 302.746 0.322009 291.82 1.13201C274.427 2.42101 257.08 6.51001 241.662 14.664C226.245 22.818 212.827 35.206 204.902 50.743C197.195 65.853 194.94 83.378 196.659 100.252C199.288 126.059 211.292 150.946 230.411 168.478C236.043 173.643 242.894 178.39 249.991 179.557C236.961 225.367 202.709 359.407 202.709 359.407L400.661 362.708C400.661 362.708 362.545 228.269 346.917 177.363L346.916 177.364Z"

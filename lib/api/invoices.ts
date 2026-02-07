@@ -1,11 +1,12 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
-import { Session } from 'next-auth';
+
+import type { Session } from 'next-auth';
 
 import type {
+  CreateInvoice,
+  GetInvoicesParams,
   Invoice,
   PaginatedResponse,
-  GetInvoicesParams,
-  CreateInvoice,
 } from '@/types/invoice';
 
 export async function createInvoice(

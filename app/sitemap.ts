@@ -1,4 +1,4 @@
-import { MetadataRoute } from 'next';
+import type { MetadataRoute } from 'next';
 
 // Fonction pour générer le sitemap dynamiquement
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

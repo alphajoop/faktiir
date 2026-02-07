@@ -1,14 +1,14 @@
 'use client';
 
+import { AlertCircleIcon, Loader2 } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { Loader2, AlertCircleIcon } from 'lucide-react';
-import { Invoice } from '@/types/invoice';
+import type { Invoice } from '@/types/invoice';
 
 interface PDFViewerDialogProps {
   open: boolean;

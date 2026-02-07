@@ -1,7 +1,19 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
+import {
+  AlertCircleIcon,
+  Download,
+  Eye,
+  Loader2,
+  Plus,
+  Trash2,
+} from 'lucide-react';
+import Link from 'next/link';
+import { useSession } from 'next-auth/react';
+import { DeleteConfirmationDialog } from '@/components/shared/delete-confirmation-dialog';
+import { PDFViewerDialog } from '@/components/shared/pdf-viewer-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -9,26 +21,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
-import {
-  AlertCircleIcon,
-  Loader2,
-  Plus,
-  Eye,
-  Download,
-  Trash2,
-} from 'lucide-react';
-import { useSession } from 'next-auth/react';
-import { useInvoices } from '@/hooks/use-invoices';
-import { DeleteConfirmationDialog } from '@/components/shared/delete-confirmation-dialog';
-import { PDFViewerDialog } from '@/components/shared/pdf-viewer-dialog';
 import {
   Pagination,
   PaginationContent,
@@ -45,7 +37,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import Link from 'next/link';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { useInvoices } from '@/hooks/use-invoices';
 
 export default function InvoicePage() {
   const { data: session, status } = useSession();
@@ -269,7 +269,7 @@ export default function InvoicePage() {
                       { length: Math.min(5, pagination.totalPages) },
                       (_, i) => {
                         // Afficher les 5 premières pages, puis '...' et les 2 dernières pages
-                        let pageNum;
+                        let pageNum: number;
                         if (pagination.totalPages <= 5) {
                           pageNum = i + 1;
                         } else if (pagination.page <= 3) {

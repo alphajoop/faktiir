@@ -1,12 +1,11 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
+import type { Session } from 'next-auth';
 import type {
+  GetInvoicesParams,
   Invoice,
   PaginatedResponse,
-  GetInvoicesParams,
 } from '@/types/invoice';
-
-import { Session } from 'next-auth';
 
 export const getAuthToken = (session: Session | null): string | undefined => {
   return session?.accessToken;

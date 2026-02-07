@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
-import * as React from 'react';
+import type * as React from 'react';
 import DashboardNav from '@/components/dashboard/DashboardNav';
-import { SidebarProvider, SidebarInset } from '@/components/ui/sidebar';
 import { SidebarComponent } from '@/components/dashboard/sidebar';
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 
 export const metadata: Metadata = {
   title: 'Faktiir - Tableau de bord',

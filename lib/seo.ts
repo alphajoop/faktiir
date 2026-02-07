@@ -1,4 +1,4 @@
-import { Metadata } from 'next';
+import type { Metadata } from 'next';
 
 // Configuration SEO de base
 export const siteConfig = {

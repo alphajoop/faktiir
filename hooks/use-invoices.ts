@@ -1,8 +1,8 @@
 import { useSession } from 'next-auth/react';
-import { useState, useEffect, useCallback } from 'react';
-import { deleteInvoice, getInvoicePdf, getInvoices } from '@/lib/api';
-import { Invoice } from '@/types/invoice';
+import { useCallback, useEffect, useState } from 'react';
 import { toast } from 'sonner';
+import { deleteInvoice, getInvoicePdf, getInvoices } from '@/lib/api';
+import type { Invoice } from '@/types/invoice';
 
 interface PaginationState {
   page: number;
@@ -98,7 +98,7 @@ export function useInvoices(params: UseInvoicesParams = {}) {
         // Créer un lien temporaire pour télécharger
         const link = document.createElement('a');
         link.href = url;
-        link.download = invoice.invoiceNo + '.pdf';
+        link.download = `${invoice.invoiceNo}.pdf`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
