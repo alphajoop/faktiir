@@ -8,6 +8,13 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { CheckCircle } from 'lucide-react';
+import { constructMetadata } from '@/lib/seo';
+
+export const metadata = constructMetadata({
+  title: 'Paiement réussi - Faktiir',
+  description:
+    'Félicitations ! Votre abonnement Faktiir Premium a été activé avec succès. Accédez dès maintenant à toutes les fonctionnalités.',
+});
 
 export default function SubscriptionSuccessPage() {
   return (

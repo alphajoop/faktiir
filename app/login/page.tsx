@@ -4,6 +4,13 @@ import { Button } from '@/components/ui/button';
 import { ModeToggle } from '@/components/ui/mode-toggle';
 import Image from 'next/image';
 import Link from 'next/link';
+import { constructMetadata } from '@/lib/seo';
+
+export const metadata = constructMetadata({
+  title: 'Connexion - Faktiir',
+  description:
+    'Connectez-vous à votre compte Faktiir pour accéder à vos factures et gérer votre activité professionnelle.',
+});
 
 export default function LoginPage() {
   return (

@@ -4,6 +4,13 @@ import { Button } from '@/components/ui/button';
 import { ModeToggle } from '@/components/ui/mode-toggle';
 import Image from 'next/image';
 import Link from 'next/link';
+import { constructMetadata } from '@/lib/seo';
+
+export const metadata = constructMetadata({
+  title: 'Inscription gratuite - Faktiir',
+  description:
+    "Créez votre compte gratuit Faktiir en 30 secondes. Aucun registre de commerce requis. Commencez à facturer dès aujourd'hui.",
+});
 
 export default function RegisterPage() {
   return (
