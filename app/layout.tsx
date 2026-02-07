@@ -6,6 +6,7 @@ import './globals.css';
 import { ThemeProvider } from '@/components/ui/theme-provider';
 import { Toaster } from '@/components/ui/sonner';
 import { Providers } from './providers';
+import { defaultMetadata, organizationSchema, websiteSchema } from '@/lib/seo';
 
 /*
 Police secondaire — Inter (Textes + “Faktiir”)
@@ -57,11 +58,7 @@ const manrope = Manrope({
   subsets: ['latin'],
 });
 
-export const metadata: Metadata = {
-  title: 'Faktiir - Facturation simple pour freelances',
-  description:
-    'Créez des factures professionnelles en quelques clics. Solution de facturation simple pour freelances et petits commerçants.',
-};
+export const metadata: Metadata = defaultMetadata;
 
 export default function RootLayout({
   children,
@@ -70,6 +67,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr">
+      <head>
+        {/* Données structurées JSON-LD */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationSchema),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(websiteSchema),
+          }}
+        />
+      </head>
       <body className={`${inter.variable} ${manrope.variable} antialiased`}>
         <SessionProvider>
           <Providers>

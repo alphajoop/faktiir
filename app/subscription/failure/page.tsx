@@ -8,6 +8,13 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { AlertCircle } from 'lucide-react';
+import { constructMetadata } from '@/lib/seo';
+
+export const metadata = constructMetadata({
+  title: 'Paiement échoué - Faktiir',
+  description:
+    'Une erreur est survenue lors du paiement de votre abonnement Faktiir. Réessayez ou contactez notre support.',
+});
 
 export default function SubscriptionFailurePage() {
   return (
