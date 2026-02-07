@@ -1,10 +1,10 @@
 'use client';
 
+import Image from 'next/image';
+import Link from 'next/link';
 import { ForgotPasswordForm } from '@/components/auth/forgot-password-form';
 import FaktiirIcon from '@/components/icons/faktiir-icon';
 import { ModeToggle } from '@/components/ui/mode-toggle';
-import Image from 'next/image';
-import Link from 'next/link';
 
 export default function ForgotPasswordPage() {
   return (

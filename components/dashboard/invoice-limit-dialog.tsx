@@ -1,5 +1,7 @@
 'use client';
 
+import { ArrowRight, CheckCircle, Sparkles, Zap } from 'lucide-react';
+import Link from 'next/link';
 import {
   AlertDialog,
   AlertDialogContent,
@@ -9,8 +11,6 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { CheckCircle, Sparkles, Zap, ArrowRight } from 'lucide-react';
-import Link from 'next/link';
 
 interface InvoiceLimitDialogProps {
   open: boolean;

@@ -1,11 +1,13 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
+import { AlertCircle, ArrowLeft, CheckCircle2, Loader } from 'lucide-react';
+import Link from 'next/link';
 import { useState } from 'react';
-
-import { cn } from '@/lib/utils';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { z } from 'zod';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -16,11 +18,8 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AlertCircle, ArrowLeft, Loader, CheckCircle2 } from 'lucide-react';
-import { toast } from 'sonner';
-import Link from 'next/link';
 import { forgotPassword } from '@/lib/api';
+import { cn } from '@/lib/utils';
 
 const forgotPasswordSchema = z.object({
   email: z.string().email('Adresse e-mail invalide'),

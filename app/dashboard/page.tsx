@@ -1,7 +1,22 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
+import {
+  AlertCircleIcon,
+  ArrowRight,
+  Download,
+  Eye,
+  Loader2,
+  Plus,
+  Trash2,
+} from 'lucide-react';
+import Link from 'next/link';
+import { useSession } from 'next-auth/react';
+import { InvoiceLimitBanner } from '@/components/dashboard/invoice-limit-banner';
+import { InvoiceStats } from '@/components/dashboard/invoice-stats';
+import { DeleteConfirmationDialog } from '@/components/shared/delete-confirmation-dialog';
+import { PDFViewerDialog } from '@/components/shared/pdf-viewer-dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -17,22 +32,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import {
-  AlertCircleIcon,
-  Loader2,
-  Plus,
-  ArrowRight,
-  Eye,
-  Download,
-  Trash2,
-} from 'lucide-react';
-import { useSession } from 'next-auth/react';
-import { InvoiceStats } from '@/components/dashboard/invoice-stats';
 import { useInvoices } from '@/hooks/use-invoices';
-import Link from 'next/link';
-import { DeleteConfirmationDialog } from '@/components/shared/delete-confirmation-dialog';
-import { PDFViewerDialog } from '@/components/shared/pdf-viewer-dialog';
-import { InvoiceLimitBanner } from '@/components/dashboard/invoice-limit-banner';
 import { useSubscription } from '@/hooks/use-subscription';
 
 export default function DashboardPage() {
@@ -157,7 +157,7 @@ export default function DashboardPage() {
                         {invoice.invoiceNo}
                       </TableCell>
                       <TableCell
-                        className="max-w-[150px] truncate"
+                        className="max-w-37.5 truncate"
                         title={invoice.clientName}
                       >
                         {invoice.clientName}

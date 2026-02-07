@@ -1,26 +1,26 @@
 'use client';
 
-import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Loader2, Upload } from 'lucide-react';
+import Image from 'next/image';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { z } from 'zod';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-  FormDescription,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useState } from 'react';
-import { Loader2, Upload } from 'lucide-react';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
-import { useUpdateProfile, useUpdateLogo } from '@/hooks/use-user';
+import { useUpdateLogo, useUpdateProfile } from '@/hooks/use-user';
 import type { User } from '@/lib/api/users';
-import Image from 'next/image';
 
 const profileFormSchema = z.object({
   name: z.string().min(2, 'Le nom doit contenir au moins 2 caractères'),

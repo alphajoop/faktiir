@@ -1,9 +1,9 @@
+import Image from 'next/image';
+import Link from 'next/link';
 import { LoginForm } from '@/components/auth/login-form';
 import FaktiirIcon from '@/components/icons/faktiir-icon';
 import { Button } from '@/components/ui/button';
 import { ModeToggle } from '@/components/ui/mode-toggle';
-import Image from 'next/image';
-import Link from 'next/link';
 import { constructMetadata } from '@/lib/seo';
 
 export const metadata = constructMetadata({

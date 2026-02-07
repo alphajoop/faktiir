@@ -1,14 +1,13 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { AlertCircle, Info, Loader } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { signIn } from 'next-auth/react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import { AlertCircle, Info, Loader } from 'lucide-react';
-import { signIn } from 'next-auth/react';
-
-import { cn } from '@/lib/utils';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -18,13 +17,13 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
 } from '@/components/ui/input-otp';
 import { sendOtp } from '@/lib/api';
+import { cn } from '@/lib/utils';
 
 const otpSchema = z.object({
   otp: z

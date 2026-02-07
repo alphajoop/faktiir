@@ -1,12 +1,14 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
-import { useState } from 'react';
+import { AlertCircle, CheckCircle2, Loader } from 'lucide-react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-
-import { cn } from '@/lib/utils';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { z } from 'zod';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -17,11 +19,8 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { AlertCircle, Loader, CheckCircle2 } from 'lucide-react';
-import { toast } from 'sonner';
-import Link from 'next/link';
 import { resetPassword } from '@/lib/api';
+import { cn } from '@/lib/utils';
 
 const resetPasswordSchema = z
   .object({

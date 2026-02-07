@@ -1,14 +1,14 @@
 'use client';
 
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
 import {
   getCurrentUser,
-  updateUserProfile,
-  updateCompanyLogo,
-  type User,
   type UpdateProfileRequest,
+  type User,
+  updateCompanyLogo,
+  updateUserProfile,
 } from '@/lib/api/users';
 
 export function useUser() {

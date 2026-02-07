@@ -1,15 +1,15 @@
 'use client';
-import { SidebarTrigger } from '@/components/ui/sidebar';
-import { Separator } from '@/components/ui/separator';
+import { LogOut } from 'lucide-react';
+import Image from 'next/image';
+import { signOut } from 'next-auth/react';
 import DynamicBreadcrumb from '@/components/dashboard/breadcrumb';
-import { ModeToggle } from '@/components/ui/mode-toggle';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { LogOut } from 'lucide-react';
-import { signOut } from 'next-auth/react';
-import { useUser } from '@/hooks/use-user';
-import Image from 'next/image';
+import { ModeToggle } from '@/components/ui/mode-toggle';
+import { Separator } from '@/components/ui/separator';
+import { SidebarTrigger } from '@/components/ui/sidebar';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useUser } from '@/hooks/use-user';
 
 export default function DashboardNav() {
   const { user, isLoading } = useUser();

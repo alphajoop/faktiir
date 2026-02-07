@@ -1,3 +1,4 @@
+import type { LucideIcon } from 'lucide-react';
 import {
   BarChart2,
   //CreditCard,
@@ -7,7 +8,6 @@ import {
   Sparkles,
   User,
 } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
 
 export interface MenuItem {
   title: string;

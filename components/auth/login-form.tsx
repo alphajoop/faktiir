@@ -1,13 +1,15 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import { AlertCircle, Loader } from 'lucide-react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { signIn, getSession } from 'next-auth/react';
-import { useForm } from 'react-hook-form';
-import { z } from 'zod';
+import { getSession, signIn } from 'next-auth/react';
 import { useState } from 'react';
-
-import { cn } from '@/lib/utils';
+import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { z } from 'zod';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -19,10 +21,7 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { InputPassword } from '@/components/ui/input-password';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { AlertCircle, Loader } from 'lucide-react';
-import { toast } from 'sonner';
-import Link from 'next/link';
+import { cn } from '@/lib/utils';
 
 const loginSchema = z.object({
   email: z.string().email('Adresse e-mail invalide'),

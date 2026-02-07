@@ -1,7 +1,8 @@
 'use client';
-import * as React from 'react';
-import { usePathname } from 'next/navigation';
+import { LayoutDashboard } from 'lucide-react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import * as React from 'react';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -10,9 +11,8 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
-import { LayoutDashboard } from 'lucide-react';
-import { useIsMobile } from '@/hooks/use-mobile';
 import { routeNameMapping } from '@/data/navigation';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 export default function DynamicBreadcrumb() {
   const pathname = usePathname();

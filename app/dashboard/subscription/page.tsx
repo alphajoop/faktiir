@@ -1,9 +1,14 @@
 'use client';
 
-import { useSession } from 'next-auth/react';
+import { CheckCircle, Loader2, Sparkles, Zap } from 'lucide-react';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { Loader2, CheckCircle, Sparkles, Zap } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 import { useState } from 'react';
+import { toast } from 'sonner';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -11,12 +16,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useSubscription } from '@/hooks/use-subscription';
-import { Badge } from '@/components/ui/badge';
-import Image from 'next/image';
-import { toast } from 'sonner';
 import { checkoutSubscription } from '@/lib/api';
 
 export default function SubscriptionPage() {

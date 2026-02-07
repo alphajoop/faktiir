@@ -1,9 +1,9 @@
 'use client';
 
-import { useState } from 'react';
-import { signOut } from 'next-auth/react';
-import { Button } from '@/components/ui/button';
 import { LogOut } from 'lucide-react';
+import { signOut } from 'next-auth/react';
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
 
 export function SignOutButton() {
   const [isLoading, setIsLoading] = useState(false);

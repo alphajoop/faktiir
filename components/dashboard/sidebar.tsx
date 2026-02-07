@@ -1,24 +1,23 @@
 'use client';
+import Link from 'next/link';
+import { signOut, useSession } from 'next-auth/react';
+import { UserMenu } from '@/components/dashboard/user-menu';
+import FaktiirIcon from '@/components/icons/faktiir-icon';
 import {
   Sidebar,
-  SidebarHeader,
   SidebarContent,
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenu,
   SidebarRail,
+  useSidebar,
 } from '@/components/ui/sidebar';
-import Link from 'next/link';
-import FaktiirIcon from '@/components/icons/faktiir-icon';
-
 import { getMenuItems } from '@/data/navigation';
-import { UserMenu } from '@/components/dashboard/user-menu';
-import { signOut, useSession } from 'next-auth/react';
-import { useSidebar } from '@/components/ui/sidebar';
 
 export function SidebarComponent() {
   const { data: session } = useSession();

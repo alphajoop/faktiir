@@ -1,9 +1,9 @@
+import Image from 'next/image';
+import Link from 'next/link';
 import { VerifyOtpForm } from '@/components/auth/verify-otp-form';
 import FaktiirIcon from '@/components/icons/faktiir-icon';
-import { ModeToggle } from '@/components/ui/mode-toggle';
-import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import Link from 'next/link';
+import { ModeToggle } from '@/components/ui/mode-toggle';
 
 export default async function VerifyOtpIndexPage({
   searchParams,

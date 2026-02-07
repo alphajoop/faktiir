@@ -1,8 +1,10 @@
 'use client';
 
+import { AlertCircleIcon, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { Loader2, AlertCircleIcon } from 'lucide-react';
+import { ProfileForm } from '@/components/dashboard/profile-form';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import {
   Card,
   CardContent,
@@ -10,8 +12,6 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { ProfileForm } from '@/components/dashboard/profile-form';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useUser } from '@/hooks/use-user';
 
 export default function ProfilePage() {

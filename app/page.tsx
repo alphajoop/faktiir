@@ -1,32 +1,32 @@
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import FaktiirLogo from '@/components/icons/faktiir-logo';
-import Link from 'next/link';
 import {
-  FileText,
-  Download,
-  CreditCard,
-  CheckCircle,
   ArrowRight,
-  Zap,
-  Shield,
-  Globe,
+  CheckCircle,
+  CreditCard,
+  Download,
   Facebook,
+  FileText,
+  Globe,
   Instagram,
-  Twitter,
   Linkedin,
   Mail,
+  Shield,
+  Twitter,
   User,
+  Zap,
 } from 'lucide-react';
-import { ModeToggle } from '@/components/ui/mode-toggle';
 import Image from 'next/image';
+import Link from 'next/link';
 import { AnimateSection } from '@/components/animate-section';
-import { constructMetadata } from '@/lib/seo';
+import FaktiirLogo from '@/components/icons/faktiir-logo';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { ModeToggle } from '@/components/ui/mode-toggle';
 import {
-  JsonLd,
   generateFaktiirProductSchema,
   generateFaktiirServiceSchema,
+  JsonLd,
 } from '@/lib/schema-helpers';
+import { constructMetadata } from '@/lib/seo';
 
 export const metadata = constructMetadata({
   title: 'Solution de facturation simple pour freelances et petits commerçants',
