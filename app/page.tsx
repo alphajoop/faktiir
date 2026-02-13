@@ -16,7 +16,6 @@ import {
 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { AnimateSection } from '@/components/animate-section';
 import FaktiirLogo from '@/components/icons/faktiir-logo';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -119,10 +118,7 @@ export default function LandingPage() {
             </section>
 
             {/* Features */}
-            <AnimateSection
-              animationClass="animate-in-fade-up-delay-100"
-              className="border-border bg-muted/30 border-t py-20"
-            >
+            <section className="border-border bg-muted/30 border-t py-20">
               <div className="mx-auto max-w-6xl px-4">
                 <h2 className="text-foreground text-center text-3xl font-bold">
                   Tout ce dont vous avez besoin
@@ -202,13 +198,10 @@ export default function LandingPage() {
                   ))}
                 </div>
               </div>
-            </AnimateSection>
+            </section>
 
             {/* Pricing */}
-            <AnimateSection
-              animationClass="animate-in-fade-up-delay-200"
-              className="bg-background/40 py-20 backdrop-blur-sm"
-            >
+            <section className="bg-background/40 py-20 backdrop-blur-sm">
               <div className="mx-auto max-w-6xl px-4">
                 <h2 className="text-foreground text-center text-3xl font-bold">
                   Tarification simple
@@ -312,13 +305,10 @@ export default function LandingPage() {
                   </Card>
                 </div>
               </div>
-            </AnimateSection>
+            </section>
 
             {/* CTA */}
-            <AnimateSection
-              animationClass="animate-in-fade-up-delay-300"
-              className="bg-primary/5 relative overflow-hidden py-20"
-            >
+            <section className="bg-primary/5 relative overflow-hidden py-20">
               <div
                 className="absolute inset-0 opacity-20"
                 style={{
@@ -341,7 +331,7 @@ export default function LandingPage() {
                   </Link>
                 </Button>
               </div>
-            </AnimateSection>
+            </section>
 
             {/* Footer */}
             <footer className="border-border bg-muted/40 border-t py-12 backdrop-blur-sm">

@@ -3,11 +3,12 @@ import type { Metadata } from 'next';
 import { Inter, Manrope } from 'next/font/google';
 import { SessionProvider } from 'next-auth/react';
 import './globals.css';
+import { PageTransition } from '@/components/animations/page-transition';
 import { JsonLd } from '@/components/shared/json-ld';
 import { Toaster } from '@/components/ui/sonner';
 import { ThemeProvider } from '@/components/ui/theme-provider';
 import { defaultMetadata, organizationSchema, websiteSchema } from '@/lib/seo';
-import { Providers } from './providers';
+import { MotionProvider, Providers } from './providers';
 
 /*
 Police secondaire — Inter (Textes + “Faktiir”)
@@ -76,15 +77,19 @@ export default function RootLayout({
       <body className={`${inter.variable} ${manrope.variable} antialiased`}>
         <SessionProvider>
           <Providers>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-            >
-              {children}
-              <Toaster richColors />
-            </ThemeProvider>
+            <MotionProvider>
+              <PageTransition>
+                <ThemeProvider
+                  attribute="class"
+                  defaultTheme="system"
+                  enableSystem
+                  disableTransitionOnChange
+                >
+                  {children}
+                  <Toaster richColors />
+                </ThemeProvider>
+              </PageTransition>
+            </MotionProvider>
           </Providers>
         </SessionProvider>
         <Analytics />
