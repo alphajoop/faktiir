@@ -1,13 +1,15 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-inter: var(--font-inter);
-  --font-manrope: var(--font-manrope);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-sans);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -41,69 +43,44 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
 }
 
 :root {
-  --radius: 0.75rem;
-
-  /* Fond blanc pur ultra-moderne */
   --background: oklch(0.99 0 0);
   --foreground: oklch(0.15 0.01 270);
-
-  /* Cards avec léger gradient violet */
   --card: oklch(0.985 0.005 280);
   --card-foreground: oklch(0.15 0.01 270);
-
-  /* Popovers élégants */
   --popover: oklch(0.99 0 0);
   --popover-foreground: oklch(0.15 0.01 270);
-
-  /* Primary: Violet électrique moderne (inspiré Stripe) */
   --primary: oklch(0.55 0.25 280);
   --primary-foreground: oklch(0.99 0 0);
-
-  /* Secondary: Bleu-gris sophistiqué */
   --secondary: oklch(0.96 0.01 250);
   --secondary-foreground: oklch(0.25 0.02 270);
-
-  /* Muted: Tons neutres ultra-subtils */
   --muted: oklch(0.97 0.005 270);
   --muted-foreground: oklch(0.5 0.02 270);
-
-  /* Accent: Cyan électrique */
   --accent: oklch(0.88 0.15 210);
   --accent-foreground: oklch(0.15 0.01 270);
-
-  /* Destructive: Rouge moderne moins agressif */
   --destructive: oklch(0.6 0.22 25);
-
-  /* Success: Vert émeraude moderne */
   --success: oklch(0.65 0.2 155);
   --success-foreground: oklch(0.99 0 0);
-
-  /* Warning: Orange ambré moderne */
   --warning: oklch(0.7 0.18 60);
   --warning-foreground: oklch(0.15 0.01 270);
-
-  /* Bordures ultra-subtiles */
   --border: oklch(0.93 0.01 270);
   --input: oklch(0.95 0.01 270);
-
-  /* Ring: Violet vif pour focus */
   --ring: oklch(0.6 0.25 280);
-
-  /* Charts: Palette moderne et vibrante */
-  --chart-1: oklch(0.55 0.25 280); /* Violet */
-  --chart-2: oklch(0.65 0.2 200); /* Cyan */
-  --chart-3: oklch(0.7 0.18 160); /* Vert menthe */
-  --chart-4: oklch(0.75 0.15 50); /* Orange doux */
-  --chart-5: oklch(0.65 0.22 330); /* Rose moderne */
-
-  /* Sidebar moderne */
+  --chart-1: oklch(0.55 0.25 280);
+  --chart-2: oklch(0.65 0.2 200);
+  --chart-3: oklch(0.7 0.18 160);
+  --chart-4: oklch(0.75 0.15 50);
+  --chart-5: oklch(0.65 0.22 330);
+  --radius: 0.625rem;
   --sidebar: oklch(0.98 0.005 270);
   --sidebar-foreground: oklch(0.2 0.02 270);
   --sidebar-primary: oklch(0.55 0.25 280);
@@ -115,60 +92,33 @@
 }
 
 .dark {
-  /* Fond noir profond avec nuance violette */
   --background: oklch(0.12 0.015 280);
   --foreground: oklch(0.95 0.01 280);
-
-  /* Cards avec élévation subtile */
   --card: oklch(0.18 0.02 280);
   --card-foreground: oklch(0.95 0.01 280);
-
-  /* Popovers élégants */
   --popover: oklch(0.16 0.02 280);
   --popover-foreground: oklch(0.95 0.01 280);
-
-  /* Primary: Violet lumineux éclatant */
   --primary: oklch(0.7 0.28 285);
   --primary-foreground: oklch(0.12 0.015 280);
-
-  /* Secondary: Gris-violet sophistiqué */
   --secondary: oklch(0.25 0.03 280);
   --secondary-foreground: oklch(0.95 0.01 280);
-
-  /* Muted: Tons sombres élégants */
   --muted: oklch(0.22 0.025 280);
   --muted-foreground: oklch(0.65 0.02 280);
-
-  /* Accent: Cyan électrique brillant */
   --accent: oklch(0.6 0.2 210);
   --accent-foreground: oklch(0.12 0.015 280);
-
-  /* Destructive: Rouge corail moderne */
   --destructive: oklch(0.65 0.25 20);
-
-  /* Success: Vert néon lumineux */
   --success: oklch(0.7 0.25 150);
   --success-foreground: oklch(0.12 0.015 280);
-
-  /* Warning: Orange doré lumineux */
   --warning: oklch(0.75 0.2 70);
   --warning-foreground: oklch(0.12 0.015 280);
-
-  /* Bordures subtiles avec transparence */
   --border: oklch(1 0 0 / 8%);
   --input: oklch(1 0 0 / 12%);
-
-  /* Ring lumineux */
   --ring: oklch(0.7 0.28 285);
-
-  /* Charts: Palette vibrante pour dark mode */
-  --chart-1: oklch(0.7 0.28 285); /* Violet électrique */
-  --chart-2: oklch(0.7 0.25 200); /* Cyan brillant */
-  --chart-3: oklch(0.75 0.22 160); /* Vert néon */
-  --chart-4: oklch(0.78 0.2 60); /* Orange lumineux */
-  --chart-5: oklch(0.72 0.26 340); /* Rose néon */
-
-  /* Sidebar dark élégante */
+  --chart-1: oklch(0.7 0.28 285);
+  --chart-2: oklch(0.7 0.25 200);
+  --chart-3: oklch(0.75 0.22 160);
+  --chart-4: oklch(0.78 0.2 60);
+  --chart-5: oklch(0.72 0.26 340);
   --sidebar: oklch(0.14 0.018 280);
   --sidebar-foreground: oklch(0.9 0.01 280);
   --sidebar-primary: oklch(0.7 0.28 285);
@@ -184,18 +134,9 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground font-inter;
-    font-feature-settings:
-      "rlig" 1,
-      "calt" 1;
+    @apply bg-background text-foreground;
   }
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6,
-  .logo-text {
-    @apply font-manrope;
+  html {
+    @apply font-sans;
   }
 }

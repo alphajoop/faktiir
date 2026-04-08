@@ -1,310 +1,204 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
-import type { Session } from 'next-auth';
-import type {
-  GetInvoicesParams,
-  Invoice,
-  PaginatedResponse,
-} from '@/types/invoice';
-
-export const getAuthToken = (session: Session | null): string | undefined => {
-  return session?.accessToken;
-};
-
-export interface RegisterDto {
+export interface User {
+  id: string;
+  email: string;
   name: string;
-  email: string;
-  password: string;
+  companyName?: string | null;
+  logoUrl?: string | null;
+  createdAt: string;
+  updatedAt: string;
 }
 
-export interface RegisterResponse {
-  message: string;
-  user: {
-    id: string;
-    name: string;
-    email: string;
-    emailVerified: boolean;
-    createdAt: string;
-  };
+export interface Client {
+  id: string;
+  name: string;
+  email?: string | null;
+  address?: string | null;
+  phone?: string | null;
+  userId: string;
 }
 
-export interface LoginDto {
-  email: string;
-  password: string;
+export interface InvoiceItem {
+  id: string;
+  description: string;
+  quantity: number;
+  unitPrice: number;
+  total: number;
+  invoiceId: string;
+}
+
+export type InvoiceStatus = 'DRAFT' | 'SENT' | 'PAID' | 'OVERDUE';
+
+export interface Invoice {
+  id: string;
+  number: string;
+  status: InvoiceStatus;
+  issueDate: string;
+  dueDate: string;
+  total: number;
+  tax: number;
+  notes?: string | null;
+  userId: string;
+  clientId: string;
+  client: Client;
+  items: InvoiceItem[];
+  user?: User;
+  createdAt: string;
 }
 
 export interface AuthResponse {
-  token: string;
-  message?: string;
-  user: {
-    id: string;
-    name: string;
-    email: string;
-    emailVerified: boolean;
-    address: string;
-    phone: string;
-    createdAt: string;
+  user: User;
+  access_token: string;
+}
+
+// ─── API Client ───────────────────────────────────────────────────────────────
+
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.faktiir.com';
+
+class ApiError extends Error {
+  constructor(
+    public status: number,
+    message: string,
+  ) {
+    super(message);
+    this.name = 'ApiError';
+  }
+}
+
+async function request<T>(
+  path: string,
+  options: RequestInit = {},
+  token?: string,
+): Promise<T> {
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    ...(options.headers as Record<string, string>),
   };
-}
+  if (token) headers.Authorization = `Bearer ${token}`;
 
-export async function register(dto: RegisterDto): Promise<RegisterResponse> {
-  const res = await fetch(`${API_URL}/auth/register`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(dto),
-  });
-  if (!res.ok) throw new Error(`Register failed: ${res.statusText}`);
+  const res = await fetch(`${BASE_URL}${path}`, { ...options, headers });
+
+  if (!res.ok) {
+    let message = res.statusText;
+    try {
+      const body = await res.json();
+      message = body.message ?? message;
+    } catch {}
+    throw new ApiError(res.status, message);
+  }
+
+  // 204 No Content
+  if (res.status === 204) return undefined as T;
   return res.json();
 }
 
-export async function login(dto: LoginDto): Promise<AuthResponse> {
-  const res = await fetch(`${API_URL}/auth/login`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(dto),
-  });
-  if (!res.ok) throw new Error(`Login failed: ${res.statusText}`);
-  return res.json();
+export const TOKEN_KEY = 'faktiir_token';
+
+export function getToken(): string | null {
+  if (typeof window === 'undefined') return null;
+  return localStorage.getItem(TOKEN_KEY);
 }
 
-export interface SendOtpDto {
-  email: string;
+export function setToken(token: string) {
+  localStorage.setItem(TOKEN_KEY, token);
 }
 
-export interface VerifyOtpDto {
-  email: string;
-  otp: string;
+export function clearToken() {
+  localStorage.removeItem(TOKEN_KEY);
 }
 
-export interface ForgotPasswordDto {
-  email: string;
-}
-
-export interface ResetPasswordDto {
-  token: string;
-  newPassword: string;
-}
-
-export interface OtpResponse {
-  message: string;
-  error?: string;
-  statusCode?: number;
-  token?: string;
-  user?: {
-    id: string;
-    name: string;
+export const auth = {
+  register: (body: {
     email: string;
-    emailVerified: boolean;
-    address: string | null;
-    phone: string | null;
-    createdAt: string;
-  };
+    password: string;
+    name: string;
+    companyName?: string;
+  }) =>
+    request<AuthResponse>('/auth/register', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }),
+
+  login: (body: { email: string; password: string }) =>
+    request<AuthResponse>('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }),
+
+  me: (token: string) => request<User>('/auth/me', {}, token),
+};
+
+export const clients = {
+  list: (token: string) => request<Client[]>('/clients', {}, token),
+  get: (id: string, token: string) =>
+    request<Client>(`/clients/${id}`, {}, token),
+  create: (
+    body: { name: string; email?: string; address?: string; phone?: string },
+    token: string,
+  ) =>
+    request<Client>(
+      '/clients',
+      { method: 'POST', body: JSON.stringify(body) },
+      token,
+    ),
+  update: (
+    id: string,
+    body: { name?: string; email?: string; address?: string; phone?: string },
+    token: string,
+  ) =>
+    request<Client>(
+      `/clients/${id}`,
+      { method: 'PATCH', body: JSON.stringify(body) },
+      token,
+    ),
+  remove: (id: string, token: string) =>
+    request<void>(`/clients/${id}`, { method: 'DELETE' }, token),
+};
+
+export interface CreateInvoiceBody {
+  clientId: string;
+  issueDate: string;
+  dueDate: string;
+  tax: number;
+  notes?: string;
+  items: { description: string; quantity: number; unitPrice: number }[];
 }
 
-export async function sendOtp(dto: SendOtpDto): Promise<OtpResponse> {
-  const res = await fetch(`${API_URL}/auth/send-otp`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(dto),
-  });
-  if (!res.ok) {
-    const errorData = await res.json().catch(() => ({}));
-    throw new Error(errorData.message || `Send OTP failed: ${res.statusText}`);
-  }
-  return res.json();
-}
+export const invoices = {
+  list: (token: string) => request<Invoice[]>('/invoices', {}, token),
+  get: (id: string, token: string) =>
+    request<Invoice>(`/invoices/${id}`, {}, token),
+  create: (body: CreateInvoiceBody, token: string) =>
+    request<Invoice>(
+      '/invoices',
+      { method: 'POST', body: JSON.stringify(body) },
+      token,
+    ),
+  update: (
+    id: string,
+    body: Partial<CreateInvoiceBody & { status: InvoiceStatus }>,
+    token: string,
+  ) =>
+    request<Invoice>(
+      `/invoices/${id}`,
+      { method: 'PATCH', body: JSON.stringify(body) },
+      token,
+    ),
+  remove: (id: string, token: string) =>
+    request<void>(`/invoices/${id}`, { method: 'DELETE' }, token),
+  pdfUrl: (id: string) => `${BASE_URL}/invoices/${id}/pdf`,
+};
 
-export async function verifyOtp(dto: VerifyOtpDto): Promise<OtpResponse> {
-  const res = await fetch(`${API_URL}/auth/verify-otp`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(dto),
-  });
-  if (!res.ok) {
-    const errorData = await res.json().catch(() => ({}));
-    throw new Error(
-      errorData.message || `Verify OTP failed: ${res.statusText}`,
-    );
-  }
-  return res.json();
-}
+export const users = {
+  profile: (token: string) => request<User>('/users/profile', {}, token),
+  update: (
+    body: { name?: string; companyName?: string; logoUrl?: string },
+    token: string,
+  ) =>
+    request<User>(
+      '/users/profile',
+      { method: 'PATCH', body: JSON.stringify(body) },
+      token,
+    ),
+};
 
-export async function getInvoices(
-  session: Session | null,
-  params: GetInvoicesParams = {},
-): Promise<PaginatedResponse<Invoice>> {
-  if (!session?.accessToken) {
-    throw new Error(
-      "Aucun jeton d'authentification disponible. Veuillez vous reconnecter.",
-    );
-  }
-
-  // Construction des paramètres de requête
-  const queryParams = new URLSearchParams();
-
-  if (params.page) queryParams.append('page', params.page.toString());
-  if (params.limit) queryParams.append('limit', params.limit.toString());
-  if (params.search) queryParams.append('search', params.search);
-  if (params.sortBy) queryParams.append('sortBy', params.sortBy);
-  if (params.sortOrder) queryParams.append('sortOrder', params.sortOrder);
-
-  const queryString = queryParams.toString();
-  const url = `${API_URL}/invoices${queryString ? `?${queryString}` : ''}`;
-
-  const res = await fetch(url, {
-    headers: {
-      Authorization: `Bearer ${session.accessToken}`,
-      'Content-Type': 'application/json',
-    },
-  });
-
-  if (!res.ok) {
-    const errorData = await res.json().catch(() => ({}));
-    throw new Error(
-      errorData.message ||
-        `Échec de la récupération des factures: ${res.statusText}`,
-    );
-  }
-
-  return res.json();
-}
-
-export async function getInvoiceById(session: Session | null, id: string) {
-  if (!session?.accessToken) {
-    throw new Error(
-      "Aucun jeton d'authentification disponible. Veuillez vous reconnecter.",
-    );
-  }
-
-  const res = await fetch(`${API_URL}/invoices/${id}`, {
-    headers: {
-      Authorization: `Bearer ${session.accessToken}`,
-      'Content-Type': 'application/json',
-    },
-  });
-
-  if (!res.ok) {
-    const errorData = await res.json().catch(() => ({}));
-    throw new Error(
-      errorData.message ||
-        `Échec de la récupération de la facture: ${res.statusText}`,
-    );
-  }
-
-  return res.json();
-}
-
-export async function getInvoicePdf(
-  session: Session | null,
-  id: string,
-): Promise<Blob> {
-  if (!session?.accessToken) {
-    throw new Error(
-      "Aucun jeton d'authentification disponible. Veuillez vous reconnecter.",
-    );
-  }
-
-  const res = await fetch(`${API_URL}/invoices/${id}/pdf`, {
-    headers: {
-      Authorization: `Bearer ${session.accessToken}`,
-    },
-  });
-
-  if (!res.ok) {
-    const errorData = await res.json().catch(() => ({}));
-    console.log('id', id);
-    console.error('PDF download failed:', {
-      status: res.status,
-      statusText: res.statusText,
-      url: res.url,
-      errorData,
-    });
-    throw new Error(
-      errorData.message ||
-        `Échec du téléchargement du PDF de la facture: ${res.statusText}`,
-    );
-  }
-
-  return res.blob();
-}
-
-export async function deleteInvoice(session: Session | null, id: string) {
-  if (!session?.accessToken) {
-    throw new Error(
-      "Aucun jeton d'authentification disponible. Veuillez vous reconnecter.",
-    );
-  }
-
-  const res = await fetch(`${API_URL}/invoices/${id}`, {
-    method: 'DELETE',
-    headers: {
-      Authorization: `Bearer ${session.accessToken}`,
-      'Content-Type': 'application/json',
-    },
-  });
-
-  if (!res.ok) {
-    const errorData = await res.json().catch(() => ({}));
-    throw new Error(
-      errorData.message ||
-        `Échec de la suppression de la facture: ${res.statusText}`,
-    );
-  }
-
-  return res.json();
-}
-
-export async function forgotPassword(
-  dto: ForgotPasswordDto,
-): Promise<{ message: string }> {
-  const res = await fetch(`${API_URL}/auth/forgot-password`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(dto),
-  });
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error.message || 'Failed to send reset password email');
-  }
-  return res.json();
-}
-
-export async function resetPassword(
-  dto: ResetPasswordDto,
-): Promise<{ message: string }> {
-  const res = await fetch(`${API_URL}/auth/reset-password`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(dto),
-  });
-  if (!res.ok) {
-    const error = await res.json();
-    throw new Error(error.message || 'Failed to reset password');
-  }
-  return res.json();
-}
-
-export async function getCurrentUser(session: Session | null) {
-  if (!session?.accessToken) {
-    throw new Error(
-      "Aucun jeton d'authentification disponible. Veuillez vous reconnecter.",
-    );
-  }
-  const res = await fetch(`${API_URL}/auth/me`, {
-    headers: {
-      Authorization: `Bearer ${session.accessToken}`,
-      'Content-Type': 'application/json',
-    },
-    cache: 'no-store',
-  });
-  if (!res.ok) {
-    const errorData = await res.json().catch(() => ({}));
-    throw new Error(
-      errorData.message ||
-        `Échec de la récupération du profil: ${res.statusText}`,
-    );
-  }
-  return res.json();
-}
-
-export * from './api/subscriptions';
+export { ApiError };
