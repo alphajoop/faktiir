@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import FaktiirIcon from '@/components/icons/faktiir-icon';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -25,34 +26,13 @@ import {
 } from '@/components/ui/sidebar';
 import { Text } from '@/components/ui/typography';
 import { useAuth } from '@/lib/auth-context';
-import FaktiirIcon from './icons/faktiir-icon';
+import { getInitials } from '@/lib/user-utils';
 
 const navItems = [
-  {
-    label: 'Tableau de bord',
-    href: '/dashboard',
-    icon: LayoutDashboardIcon,
-  },
-  {
-    label: 'Factures',
-    href: '/dashboard/invoices',
-    icon: ReceiptIcon,
-  },
-  {
-    label: 'Clients',
-    href: '/dashboard/clients',
-    icon: UsersIcon,
-  },
+  { label: 'Tableau de bord', href: '/dashboard', icon: LayoutDashboardIcon },
+  { label: 'Factures', href: '/dashboard/invoices', icon: ReceiptIcon },
+  { label: 'Clients', href: '/dashboard/clients', icon: UsersIcon },
 ];
-
-function getInitials(name: string) {
-  return name
-    .split(' ')
-    .map((n) => n[0])
-    .slice(0, 2)
-    .join('')
-    .toUpperCase();
-}
 
 export function AppSidebar() {
   const pathname = usePathname();
@@ -66,7 +46,6 @@ export function AppSidebar() {
 
   return (
     <Sidebar collapsible="icon">
-      {/* Logo */}
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
@@ -88,12 +67,8 @@ export function AppSidebar() {
         </SidebarMenu>
       </SidebarHeader>
 
-      {/* <SidebarSeparator /> */}
-
-      {/* Navigation */}
       <SidebarContent>
         <SidebarGroup>
-          {/* <SidebarGroupLabel>Général</SidebarGroupLabel> */}
           <SidebarGroupContent>
             <SidebarMenu>
               {navItems.map((item) => {
@@ -121,7 +96,6 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      {/* Footer */}
       <SidebarFooter>
         <SidebarSeparator />
         <SidebarMenu>

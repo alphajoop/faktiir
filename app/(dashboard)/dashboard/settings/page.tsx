@@ -16,21 +16,13 @@ import { Spinner } from '@/components/ui/spinner';
 import { Caption, Text } from '@/components/ui/typography';
 import { useAuth } from '@/lib/auth-context';
 import { useProfile, useUpdateProfile } from '@/lib/hooks';
+import { getInitials } from '@/lib/user-utils';
 
 const profileSchema = z.object({
   name: z.string().min(2, 'Au moins 2 caractères'),
   companyName: z.string().optional(),
   logoUrl: z.union([z.url('URL invalide'), z.literal('')]).optional(),
 });
-
-function getInitials(name: string) {
-  return name
-    .split(' ')
-    .map((n) => n[0])
-    .slice(0, 2)
-    .join('')
-    .toUpperCase();
-}
 
 export default function SettingsPage() {
   const { user, logout } = useAuth();
@@ -55,11 +47,10 @@ export default function SettingsPage() {
   });
 
   useEffect(() => {
-    if (profile) {
-      form.setFieldValue('name', profile.name);
-      form.setFieldValue('companyName', profile.companyName ?? '');
-      form.setFieldValue('logoUrl', profile.logoUrl ?? '');
-    }
+    if (!profile) return;
+    form.setFieldValue('name', profile.name);
+    form.setFieldValue('companyName', profile.companyName ?? '');
+    form.setFieldValue('logoUrl', profile.logoUrl ?? '');
   }, [profile, form.setFieldValue]);
 
   const handleLogout = () => {
