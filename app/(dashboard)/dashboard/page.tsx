@@ -50,6 +50,25 @@ function StatCard({
   );
 }
 
+function RecentInvoicesSkeleton() {
+  let skeletonCounter = 0;
+
+  return (
+    <div className="flex flex-col divide-y divide-border">
+      {Array.from({ length: 4 }).map(() => {
+        const skeletonId = `recent-invoice-skeleton-${++skeletonCounter}`;
+        return (
+          <div key={skeletonId} className="flex items-center gap-3 px-4 py-3">
+            <Skeleton className="h-4 w-24" />
+            <Skeleton className="h-4 w-16 ml-auto" />
+            <Skeleton className="h-5 w-14" />
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function DashboardPage() {
   const { user } = useAuth();
   const { data: invoiceList, isLoading: loadingInvoices } = useInvoices();
@@ -57,10 +76,10 @@ export default function DashboardPage() {
 
   const paid = invoiceList?.filter((i) => i.status === 'PAID') ?? [];
   const overdue = invoiceList?.filter((i) => i.status === 'OVERDUE') ?? [];
-  const totalRevenue = paid.reduce((s, i) => s + i.total, 0);
   const pending =
     invoiceList?.filter((i) => i.status === 'SENT' || i.status === 'DRAFT') ??
     [];
+  const totalRevenue = paid.reduce((s, i) => s + i.total, 0);
 
   const recent = [...(invoiceList ?? [])]
     .sort(
@@ -69,12 +88,9 @@ export default function DashboardPage() {
     )
     .slice(0, 5);
 
+  const hour = new Date().getHours();
   const greeting =
-    new Date().getHours() < 12
-      ? 'Bonjour'
-      : new Date().getHours() < 18
-        ? 'Bon après-midi'
-        : 'Bonsoir';
+    hour < 12 ? 'Bonjour' : hour < 18 ? 'Bon après-midi' : 'Bonsoir';
 
   return (
     <>
@@ -91,7 +107,6 @@ export default function DashboardPage() {
       />
 
       <div className="flex flex-1 flex-col gap-6 p-4 md:p-6">
-        {/* Greeting */}
         <div>
           <Text size="base" weight="semibold">
             {greeting}, {user?.name?.split(' ')[0]} 👋
@@ -145,18 +160,7 @@ export default function DashboardPage() {
 
           <div className="rounded-xl border border-border bg-card overflow-hidden">
             {loadingInvoices ? (
-              <div className="flex flex-col divide-y divide-border">
-                {Array.from({ length: 4 }).map(() => (
-                  <div
-                    key={Math.random()}
-                    className="flex items-center gap-3 px-4 py-3"
-                  >
-                    <Skeleton className="h-4 w-24" />
-                    <Skeleton className="h-4 w-16 ml-auto" />
-                    <Skeleton className="h-5 w-14" />
-                  </div>
-                ))}
-              </div>
+              <RecentInvoicesSkeleton />
             ) : recent.length === 0 ? (
               <div className="flex flex-col items-center gap-2 py-12 text-center">
                 <FileTextIcon className="size-8 text-muted-foreground/40" />

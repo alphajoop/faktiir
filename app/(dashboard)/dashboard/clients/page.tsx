@@ -22,9 +22,9 @@ import { toast } from 'sonner';
 import { ConfirmDialog } from '@/components/confirm-dialog';
 import { EmptyState } from '@/components/empty-state';
 import { PageHeader } from '@/components/page-header';
+import { TableSkeleton } from '@/components/table-skeleton';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
   TableBody,
@@ -170,18 +170,7 @@ export default function ClientsPage() {
 
         <div className="rounded-xl border border-border bg-card overflow-hidden">
           {isLoading ? (
-            <div className="flex flex-col divide-y divide-border">
-              {Array.from({ length: 4 }).map(() => (
-                <div
-                  key={Math.random()}
-                  className="flex items-center gap-4 px-4 py-3"
-                >
-                  <Skeleton className="h-4 w-28" />
-                  <Skeleton className="h-4 w-36" />
-                  <Skeleton className="h-4 w-24 ml-auto" />
-                </div>
-              ))}
-            </div>
+            <TableSkeleton rows={4} cols={['w-28', 'w-36', 'w-24']} />
           ) : table.getRowModel().rows.length === 0 ? (
             <EmptyState
               icon={<UsersIcon className="size-5" />}
