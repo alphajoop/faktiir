@@ -75,7 +75,7 @@ export function ClientForm({
             />
             {field.state.meta.errors.length > 0 && (
               <Text size="xs" variant="destructive">
-                {field.state.meta.errors[0]?.message}
+                {field.state.meta.errors[0]}
               </Text>
             )}
           </div>
@@ -111,7 +111,7 @@ export function ClientForm({
             />
             {field.state.meta.errors.length > 0 && (
               <Text size="xs" variant="destructive">
-                {field.state.meta.errors[0]?.message}
+                {field.state.meta.errors[0]}
               </Text>
             )}
           </div>
