@@ -5,40 +5,39 @@ on:
   pull_request:
 
 jobs:
-  build:
+  quality:
+    name: Quality, Build & Test
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+      # 1️⃣ Checkout repository
+      - name: Checkout repo
+        uses: actions/checkout@v6
         with:
-          version: 10
+          persist-credentials: false
 
-      - name: Get pnpm store directory
-        run: echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_ENV
-
-      - name: Setup pnpm cache
-        uses: actions/cache@v4
+      # 2️⃣ Setup Bun
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
         with:
-          path: $env.STORE_PATH
-          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-store-
+          bun-version: latest
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v5
-        with:
-          node-version: '22'
-          cache: 'pnpm'
-
+      # 3️⃣ Install dependencies
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: bun install
 
-      - name: Run Biome checks
-        run: pnpm run lint
+      # 4️⃣ Setup Biome
+      - name: Setup Biome
+        uses: biomejs/setup-biome@v2
+        with:
+          version: latest
 
-      - name: Build Next.js application
-        run: pnpm build
+      # 5️⃣ Run Biome
+      - name: Run Biome
+        run: biome ci .
+
+      # 6️⃣ Build Next.js
+      - name: Build Next.js
+        run: bun run build
