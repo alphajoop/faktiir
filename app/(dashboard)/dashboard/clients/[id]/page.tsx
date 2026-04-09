@@ -29,7 +29,7 @@ export default function ClientDetailPage() {
   const deleteClient = useDeleteClient();
 
   const clientInvoices =
-    allInvoices?.filter((inv) => inv.clientId === id) ?? [];
+    allInvoices?.data?.filter((inv) => inv.clientId === id) ?? [];
 
   const handleDelete = () => {
     if (
