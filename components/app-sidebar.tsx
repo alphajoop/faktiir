@@ -10,6 +10,7 @@ import {
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import FaktiirIcon from '@/components/icons/faktiir-icon';
+import { ModeToggle } from '@/components/mode-toggle';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -126,15 +127,17 @@ export function AppSidebar() {
                 {user.email}
               </Text>
             </div>
-            <Button
-              variant="ghost"
-              size="icon-xs"
-              onClick={handleLogout}
-              className="shrink-0 group-data-[collapsible=icon]:hidden"
-              title="Se déconnecter"
-            >
-              <LogOutIcon />
-            </Button>
+            <div className="flex shrink-0 items-center gap-0.5 group-data-[collapsible=icon]:hidden">
+              <ModeToggle />
+              <Button
+                variant="ghost"
+                size="icon-xs"
+                onClick={handleLogout}
+                title="Se déconnecter"
+              >
+                <LogOutIcon />
+              </Button>
+            </div>
           </div>
         )}
       </SidebarFooter>
