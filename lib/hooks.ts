@@ -1,32 +1,30 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   type Client,
+  type ClientsQuery,
   type CreateInvoiceBody,
   clients,
   type InvoiceStatus,
+  type InvoicesQuery,
   invoices,
   type User,
   users,
 } from '@/lib/api';
 import { useAuth } from '@/lib/auth-context';
 
-// ─── Query Keys ───────────────────────────────────────────────────────────────
-
 export const qk = {
-  clients: ['clients'] as const,
+  clients: (q?: ClientsQuery) => ['clients', q ?? {}] as const,
   client: (id: string) => ['clients', id] as const,
-  invoices: ['invoices'] as const,
+  invoices: (q?: InvoicesQuery) => ['invoices', q ?? {}] as const,
   invoice: (id: string) => ['invoices', id] as const,
   profile: ['profile'] as const,
 };
 
-// ─── Clients ──────────────────────────────────────────────────────────────────
-
-export function useClients() {
+export function useClients(query?: ClientsQuery) {
   const { token } = useAuth();
   return useQuery({
-    queryKey: qk.clients,
-    queryFn: () => clients.list(token as string),
+    queryKey: qk.clients(query),
+    queryFn: () => clients.list(token as string, query),
     enabled: !!token,
   });
 }
@@ -54,7 +52,7 @@ export function useCreateClient() {
         },
         token as string,
       ),
-    onSuccess: () => qc.invalidateQueries({ queryKey: qk.clients }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['clients'] }),
   });
 }
 
@@ -73,10 +71,7 @@ export function useUpdateClient() {
         },
         token as string,
       ),
-    onSuccess: (_, { id }) => {
-      qc.invalidateQueries({ queryKey: qk.clients });
-      qc.invalidateQueries({ queryKey: qk.client(id) });
-    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['clients'] }),
   });
 }
 
@@ -85,17 +80,15 @@ export function useDeleteClient() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => clients.remove(id, token as string),
-    onSuccess: () => qc.invalidateQueries({ queryKey: qk.clients }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['clients'] }),
   });
 }
 
-// ─── Invoices ─────────────────────────────────────────────────────────────────
-
-export function useInvoices() {
+export function useInvoices(query?: InvoicesQuery) {
   const { token } = useAuth();
   return useQuery({
-    queryKey: qk.invoices,
-    queryFn: () => invoices.list(token as string),
+    queryKey: qk.invoices(query),
+    queryFn: () => invoices.list(token as string, query),
     enabled: !!token,
   });
 }
@@ -115,7 +108,7 @@ export function useCreateInvoice() {
   return useMutation({
     mutationFn: (body: CreateInvoiceBody) =>
       invoices.create(body, token as string),
-    onSuccess: () => qc.invalidateQueries({ queryKey: qk.invoices }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['invoices'] }),
   });
 }
 
@@ -130,7 +123,7 @@ export function useUpdateInvoice() {
       id: string;
     }) => invoices.update(id, body, token as string),
     onSuccess: (_, { id }) => {
-      qc.invalidateQueries({ queryKey: qk.invoices });
+      qc.invalidateQueries({ queryKey: ['invoices'] });
       qc.invalidateQueries({ queryKey: qk.invoice(id) });
     },
   });
@@ -141,11 +134,9 @@ export function useDeleteInvoice() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (id: string) => invoices.remove(id, token as string),
-    onSuccess: () => qc.invalidateQueries({ queryKey: qk.invoices }),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['invoices'] }),
   });
 }
-
-// ─── Profile ──────────────────────────────────────────────────────────────────
 
 export function useProfile() {
   const { token } = useAuth();

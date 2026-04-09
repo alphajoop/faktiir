@@ -50,7 +50,37 @@ export interface AuthResponse {
   access_token: string;
 }
 
-// ─── API Client ───────────────────────────────────────────────────────────────
+export interface PaginatedResponse<T> {
+  data: T[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+export interface ClientsQuery {
+  page?: number;
+  limit?: number;
+  search?: string;
+  sortBy?: 'name' | 'createdAt';
+  order?: 'asc' | 'desc';
+}
+
+export interface InvoicesQuery {
+  page?: number;
+  limit?: number;
+  search?: string;
+  status?: InvoiceStatus;
+  clientId?: string;
+  sortBy?:
+    | 'number'
+    | 'issueDate'
+    | 'dueDate'
+    | 'total'
+    | 'status'
+    | 'createdAt';
+  order?: 'asc' | 'desc';
+}
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.faktiir.com';
 
@@ -64,19 +94,31 @@ class ApiError extends Error {
   }
 }
 
+function buildUrl(path: string, params?: Record<string, unknown>): string {
+  const url = new URL(`${BASE_URL}${path}`);
+  if (params) {
+    for (const [key, value] of Object.entries(params)) {
+      if (value !== undefined && value !== null && value !== '') {
+        url.searchParams.set(key, String(value));
+      }
+    }
+  }
+  return url.toString();
+}
+
 async function request<T>(
   path: string,
   options: RequestInit = {},
   token?: string,
+  params?: Record<string, unknown>,
 ): Promise<T> {
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     ...(options.headers as Record<string, string>),
   };
   if (token) headers.Authorization = `Bearer ${token}`;
-
-  const res = await fetch(`${BASE_URL}${path}`, { ...options, headers });
-
+  const url = buildUrl(path, params);
+  const res = await fetch(url, { ...options, headers });
   if (!res.ok) {
     let message = res.statusText;
     try {
@@ -85,23 +127,18 @@ async function request<T>(
     } catch {}
     throw new ApiError(res.status, message);
   }
-
-  // 204 No Content
   if (res.status === 204) return undefined as T;
   return res.json();
 }
 
 export const TOKEN_KEY = 'faktiir_token';
-
 export function getToken(): string | null {
   if (typeof window === 'undefined') return null;
   return localStorage.getItem(TOKEN_KEY);
 }
-
 export function setToken(token: string) {
   localStorage.setItem(TOKEN_KEY, token);
 }
-
 export function clearToken() {
   localStorage.removeItem(TOKEN_KEY);
 }
@@ -117,18 +154,22 @@ export const auth = {
       method: 'POST',
       body: JSON.stringify(body),
     }),
-
   login: (body: { email: string; password: string }) =>
     request<AuthResponse>('/auth/login', {
       method: 'POST',
       body: JSON.stringify(body),
     }),
-
   me: (token: string) => request<User>('/auth/me', {}, token),
 };
 
 export const clients = {
-  list: (token: string) => request<Client[]>('/clients', {}, token),
+  list: (token: string, query?: ClientsQuery) =>
+    request<PaginatedResponse<Client>>(
+      '/clients',
+      {},
+      token,
+      query as Record<string, unknown>,
+    ),
   get: (id: string, token: string) =>
     request<Client>(`/clients/${id}`, {}, token),
   create: (
@@ -164,7 +205,13 @@ export interface CreateInvoiceBody {
 }
 
 export const invoices = {
-  list: (token: string) => request<Invoice[]>('/invoices', {}, token),
+  list: (token: string, query?: InvoicesQuery) =>
+    request<PaginatedResponse<Invoice>>(
+      '/invoices',
+      {},
+      token,
+      query as Record<string, unknown>,
+    ),
   get: (id: string, token: string) =>
     request<Invoice>(`/invoices/${id}`, {}, token),
   create: (body: CreateInvoiceBody, token: string) =>
