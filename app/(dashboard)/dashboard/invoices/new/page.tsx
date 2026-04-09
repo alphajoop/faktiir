@@ -40,7 +40,8 @@ const invoiceSchema = z.object({
 
 export default function NewInvoicePage() {
   const router = useRouter();
-  const { data: clientList } = useClients();
+  const { data: clientsData } = useClients();
+  const clientList = clientsData?.data ?? [];
   const createInvoice = useCreateInvoice();
 
   const [items, setItems] = useState<InvoiceLineItem[]>([emptyItem()]);

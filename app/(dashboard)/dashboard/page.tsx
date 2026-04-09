@@ -71,8 +71,11 @@ function RecentInvoicesSkeleton() {
 
 export default function DashboardPage() {
   const { user } = useAuth();
-  const { data: invoiceList, isLoading: loadingInvoices } = useInvoices();
-  const { data: clientList, isLoading: loadingClients } = useClients();
+  const { data: invoicesData, isLoading: loadingInvoices } = useInvoices();
+  const { data: clientsData, isLoading: loadingClients } = useClients();
+
+  const invoiceList = invoicesData?.data ?? [];
+  const clientList = clientsData?.data ?? [];
 
   const paid = invoiceList?.filter((i) => i.status === 'PAID') ?? [];
   const overdue = invoiceList?.filter((i) => i.status === 'OVERDUE') ?? [];
@@ -81,7 +84,7 @@ export default function DashboardPage() {
     [];
   const totalRevenue = paid.reduce((s, i) => s + i.total, 0);
 
-  const recent = [...(invoiceList ?? [])]
+  const recent = [...invoiceList]
     .sort(
       (a, b) =>
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),

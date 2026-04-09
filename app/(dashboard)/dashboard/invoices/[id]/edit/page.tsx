@@ -20,7 +20,8 @@ export default function EditInvoicePage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const { data: invoice, isLoading } = useInvoice(id);
-  const { data: clientList } = useClients();
+  const { data: clientsData } = useClients();
+  const clientList = clientsData?.data ?? [];
   const updateInvoice = useUpdateInvoice();
 
   const [items, setItems] = useState<InvoiceLineItem[]>([emptyItem()]);
