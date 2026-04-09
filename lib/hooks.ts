@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
+  auth,
   type Client,
   type ClientsQuery,
   type CreateInvoiceBody,
@@ -163,5 +164,28 @@ export function useUpdateProfile() {
         token as string,
       ),
     onSuccess: () => qc.invalidateQueries({ queryKey: qk.profile }),
+  });
+}
+
+export function useForgotPassword() {
+  return useMutation({
+    mutationFn: (body: { email: string }) => auth.forgotPassword(body),
+  });
+}
+
+export function useVerifyOtp() {
+  return useMutation({
+    mutationFn: (body: { email: string; otp: string }) => auth.verifyOtp(body),
+  });
+}
+
+export function useResetPassword() {
+  const { login } = useAuth();
+  return useMutation({
+    mutationFn: (body: { email: string; otp: string; newPassword: string }) =>
+      auth.resetPassword(body),
+    onSuccess: (data) => {
+      login(data.access_token, data.user);
+    },
   });
 }

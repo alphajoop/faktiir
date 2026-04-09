@@ -160,6 +160,21 @@ export const auth = {
       body: JSON.stringify(body),
     }),
   me: (token: string) => request<User>('/auth/me', {}, token),
+  forgotPassword: (body: { email: string }) =>
+    request<void>('/auth/forgot-password', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }),
+  verifyOtp: (body: { email: string; otp: string }) =>
+    request<void>('/auth/verify-otp', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }),
+  resetPassword: (body: { email: string; otp: string; newPassword: string }) =>
+    request<AuthResponse>('/auth/reset-password', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }),
 };
 
 export const clients = {
