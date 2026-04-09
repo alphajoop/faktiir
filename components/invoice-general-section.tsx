@@ -44,33 +44,34 @@ export function InvoiceGeneralSection({
         {/* Client */}
         <div className="flex flex-col gap-1.5 sm:col-span-2">
           <Label>Client *</Label>
-          <Select value={clientId} onValueChange={onClientChange}>
-            <SelectTrigger
-              className={clientIdError ? 'border-destructive' : ''}
-            >
-              <SelectValue placeholder="Sélectionner un client…" />
-            </SelectTrigger>
-            <SelectContent>
-              {clients?.length === 0 && (
-                <div className="px-3 py-6 text-center">
-                  <Text size="xs" variant="muted">
-                    Aucun client.{' '}
-                    <Link
-                      href="/dashboard/clients/new"
-                      className="text-primary underline-offset-4 hover:underline"
-                    >
-                      Créer un client
-                    </Link>
-                  </Text>
-                </div>
-              )}
-              {clients?.map((c) => (
-                <SelectItem key={c.id} value={c.id}>
-                  {c.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          {clients?.length === 0 ? (
+            <div className="rounded-md border border-border bg-muted/30 p-4 text-center">
+              <Text size="sm" variant="muted">
+                Aucun client.{' '}
+                <Link
+                  href="/dashboard/clients/new"
+                  className="text-primary underline-offset-4 hover:underline font-medium"
+                >
+                  Créer un client
+                </Link>
+              </Text>
+            </div>
+          ) : (
+            <Select value={clientId} onValueChange={onClientChange}>
+              <SelectTrigger
+                className={clientIdError ? 'border-destructive' : ''}
+              >
+                <SelectValue placeholder="Sélectionner un client…" />
+              </SelectTrigger>
+              <SelectContent>
+                {clients?.map((c) => (
+                  <SelectItem key={c.id} value={c.id}>
+                    {c.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
           {clientIdError && (
             <Text size="xs" variant="destructive">
               {clientIdError}
