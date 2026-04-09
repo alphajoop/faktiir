@@ -134,6 +134,15 @@ export default function LoginPage() {
             )}
           </form.Field>
 
+          <div className="text-right">
+            <Link
+              href="/forgot-password"
+              className="text-sm text-primary underline-offset-4 hover:underline"
+            >
+              Mot de passe oublié ?
+            </Link>
+          </div>
+
           <Button
             type="submit"
             className="w-full"
