@@ -59,9 +59,8 @@ export function AppSidebar() {
               </div>
               <div className="flex flex-col gap-0.5 leading-none">
                 <span className="font-heading font-semibold text-sm text-foreground group-data-[collapsible=icon]:hidden">
-                  Faktiir
+                  FAKTIIR
                 </span>
-                <span className="text-xs capitalize">{user?.name}</span>
               </div>
             </SidebarMenuButton>
           </SidebarMenuItem>
