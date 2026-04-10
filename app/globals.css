@@ -89,6 +89,8 @@
   --sidebar-accent-foreground: oklch(0.25 0.02 270);
   --sidebar-border: oklch(0.92 0.01 270);
   --sidebar-ring: oklch(0.6 0.25 280);
+
+  --ease-out-expo: cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .dark {
@@ -139,4 +141,56 @@
   html {
     @apply font-sans;
   }
+}
+
+/* Landing page animations */
+
+@keyframes fade-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Staggered hero entrance — apply to direct children of the hero text block */
+.hero-animate-1 {
+  animation: fade-slide-up 500ms var(--ease-out-expo) both;
+}
+.hero-animate-2 {
+  animation: fade-slide-up 500ms var(--ease-out-expo) 80ms both;
+}
+.hero-animate-3 {
+  animation: fade-slide-up 500ms var(--ease-out-expo) 160ms both;
+}
+.hero-animate-4 {
+  animation: fade-slide-up 500ms var(--ease-out-expo) 240ms both;
+}
+.hero-animate-5 {
+  animation: fade-slide-up 500ms var(--ease-out-expo) 320ms both;
+}
+.hero-animate-6 {
+  animation: fade-slide-up 600ms var(--ease-out-expo) 400ms both;
+}
+
+.landing-grid-bg {
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      currentColor 0,
+      currentColor 1px,
+      transparent 0,
+      transparent 50%
+    ),
+    repeating-linear-gradient(
+      90deg,
+      currentColor 0,
+      currentColor 1px,
+      transparent 0,
+      transparent 50%
+    );
+  background-size: 40px 40px;
 }
