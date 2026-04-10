@@ -1,7 +1,5 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
 import { AppSidebar } from '@/components/app-sidebar';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { Spinner } from '@/components/ui/spinner';
@@ -12,24 +10,15 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { user, isLoading } = useAuth();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (!isLoading && !user) {
-      router.push('/login');
-    }
-  }, [isLoading, user, router]);
+  const { isLoading } = useAuth();
 
   if (isLoading) {
     return (
-      <div className="flex min-h-full flex-1 items-center justify-center">
+      <div className="flex min-h-svh items-center justify-center">
         <Spinner className="size-5 text-muted-foreground" />
       </div>
     );
   }
-
-  if (!user) return null;
 
   return (
     <SidebarProvider>

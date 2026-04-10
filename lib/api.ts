@@ -47,7 +47,7 @@ export interface Invoice {
 
 export interface AuthResponse {
   user: User;
-  access_token: string;
+  access_token: string; // Still returned for API clients / Swagger
 }
 
 export interface PaginatedResponse<T> {
@@ -106,19 +106,24 @@ function buildUrl(path: string, params?: Record<string, unknown>): string {
   return url.toString();
 }
 
+// All requests use credentials: 'include' so the httpOnly cookie is sent automatically
 async function request<T>(
   path: string,
   options: RequestInit = {},
-  token?: string,
   params?: Record<string, unknown>,
 ): Promise<T> {
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     ...(options.headers as Record<string, string>),
   };
-  if (token) headers.Authorization = `Bearer ${token}`;
+
   const url = buildUrl(path, params);
-  const res = await fetch(url, { ...options, headers });
+  const res = await fetch(url, {
+    ...options,
+    headers,
+    credentials: 'include', // sends the httpOnly cookie on every request
+  });
+
   if (!res.ok) {
     let message = res.statusText;
     try {
@@ -127,20 +132,9 @@ async function request<T>(
     } catch {}
     throw new ApiError(res.status, message);
   }
+
   if (res.status === 204) return undefined as T;
   return res.json();
-}
-
-export const TOKEN_KEY = 'faktiir_token';
-export function getToken(): string | null {
-  if (typeof window === 'undefined') return null;
-  return localStorage.getItem(TOKEN_KEY);
-}
-export function setToken(token: string) {
-  localStorage.setItem(TOKEN_KEY, token);
-}
-export function clearToken() {
-  localStorage.removeItem(TOKEN_KEY);
 }
 
 export const auth = {
@@ -159,7 +153,13 @@ export const auth = {
       method: 'POST',
       body: JSON.stringify(body),
     }),
-  me: (token: string) => request<User>('/auth/me', {}, token),
+  me: (token: string) => {
+    const headers: Record<string, string> = {};
+    if (token) headers.Authorization = `Bearer ${token}`;
+    return request<User>('/auth/me', { headers });
+  },
+  meWithCookie: () => request<User>('/auth/me'),
+  logout: () => request<void>('/auth/logout', { method: 'POST' }),
   forgotPassword: (body: { email: string }) =>
     request<void>('/auth/forgot-password', {
       method: 'POST',
@@ -178,36 +178,29 @@ export const auth = {
 };
 
 export const clients = {
-  list: (token: string, query?: ClientsQuery) =>
+  list: (query?: ClientsQuery) =>
     request<PaginatedResponse<Client>>(
       '/clients',
       {},
-      token,
       query as Record<string, unknown>,
     ),
-  get: (id: string, token: string) =>
-    request<Client>(`/clients/${id}`, {}, token),
-  create: (
-    body: { name: string; email?: string; address?: string; phone?: string },
-    token: string,
-  ) =>
-    request<Client>(
-      '/clients',
-      { method: 'POST', body: JSON.stringify(body) },
-      token,
-    ),
+  get: (id: string) => request<Client>(`/clients/${id}`),
+  create: (body: {
+    name: string;
+    email?: string;
+    address?: string;
+    phone?: string;
+  }) =>
+    request<Client>('/clients', { method: 'POST', body: JSON.stringify(body) }),
   update: (
     id: string,
     body: { name?: string; email?: string; address?: string; phone?: string },
-    token: string,
   ) =>
-    request<Client>(
-      `/clients/${id}`,
-      { method: 'PATCH', body: JSON.stringify(body) },
-      token,
-    ),
-  remove: (id: string, token: string) =>
-    request<void>(`/clients/${id}`, { method: 'DELETE' }, token),
+    request<Client>(`/clients/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(body),
+    }),
+  remove: (id: string) => request<void>(`/clients/${id}`, { method: 'DELETE' }),
 };
 
 export interface CreateInvoiceBody {
@@ -220,47 +213,38 @@ export interface CreateInvoiceBody {
 }
 
 export const invoices = {
-  list: (token: string, query?: InvoicesQuery) =>
+  list: (query?: InvoicesQuery) =>
     request<PaginatedResponse<Invoice>>(
       '/invoices',
       {},
-      token,
       query as Record<string, unknown>,
     ),
-  get: (id: string, token: string) =>
-    request<Invoice>(`/invoices/${id}`, {}, token),
-  create: (body: CreateInvoiceBody, token: string) =>
-    request<Invoice>(
-      '/invoices',
-      { method: 'POST', body: JSON.stringify(body) },
-      token,
-    ),
+  get: (id: string) => request<Invoice>(`/invoices/${id}`),
+  create: (body: CreateInvoiceBody) =>
+    request<Invoice>('/invoices', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    }),
   update: (
     id: string,
     body: Partial<CreateInvoiceBody & { status: InvoiceStatus }>,
-    token: string,
   ) =>
-    request<Invoice>(
-      `/invoices/${id}`,
-      { method: 'PATCH', body: JSON.stringify(body) },
-      token,
-    ),
-  remove: (id: string, token: string) =>
-    request<void>(`/invoices/${id}`, { method: 'DELETE' }, token),
+    request<Invoice>(`/invoices/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify(body),
+    }),
+  remove: (id: string) =>
+    request<void>(`/invoices/${id}`, { method: 'DELETE' }),
   pdfUrl: (id: string) => `${BASE_URL}/invoices/${id}/pdf`,
 };
 
 export const users = {
-  profile: (token: string) => request<User>('/users/profile', {}, token),
-  update: (
-    body: { name?: string; companyName?: string; logoUrl?: string },
-    token: string,
-  ) =>
-    request<User>(
-      '/users/profile',
-      { method: 'PATCH', body: JSON.stringify(body) },
-      token,
-    ),
+  profile: () => request<User>('/users/profile'),
+  update: (body: { name?: string; companyName?: string; logoUrl?: string }) =>
+    request<User>('/users/profile', {
+      method: 'PATCH',
+      body: JSON.stringify(body),
+    }),
 };
 
 export { ApiError };

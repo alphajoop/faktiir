@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { z } from 'zod/v4';
 import { AuthSplitLayout } from '@/components/auth-split-layout';
+import { SearchParamsProvider } from '@/components/search-params-provider';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -22,14 +23,23 @@ const loginSchema = z.object({
 });
 
 export default function LoginPage() {
+  return (
+    <SearchParamsProvider>
+      {(searchParams) => <LoginPageContent searchParams={searchParams} />}
+    </SearchParamsProvider>
+  );
+}
+
+function LoginPageContent({ searchParams }: { searchParams: URLSearchParams }) {
   const router = useRouter();
-  const { login } = useAuth();
+  const { setUser } = useAuth();
+  const from = searchParams.get('from') ?? '/dashboard';
 
   const mutation = useMutation({
     mutationFn: (values: z.infer<typeof loginSchema>) => auth.login(values),
     onSuccess: (data) => {
-      login(data.access_token, data.user);
-      router.push('/dashboard');
+      setUser(data.user);
+      router.push(from);
     },
     onError: (err) => {
       toast.error(err.message ?? 'Identifiants incorrects');
@@ -114,11 +124,19 @@ export default function LoginPage() {
           >
             {(field) => (
               <div className="space-y-1.5">
-                <Label htmlFor={field.name}>Mot de passe</Label>
+                <div className="flex items-center justify-between">
+                  <Label htmlFor={field.name}>Mot de passe</Label>
+                  <Link
+                    href="/forgot-password"
+                    className="text-xs text-muted-foreground hover:text-primary underline-offset-4 hover:underline transition-colors"
+                  >
+                    Mot de passe oublié ?
+                  </Link>
+                </div>
                 <Input
                   id={field.name}
                   type="password"
-                  placeholder="••••••••"
+                  placeholder="###"
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
@@ -133,15 +151,6 @@ export default function LoginPage() {
               </div>
             )}
           </form.Field>
-
-          <div className="text-right">
-            <Link
-              href="/forgot-password"
-              className="text-sm text-primary underline-offset-4 hover:underline"
-            >
-              Mot de passe oublié ?
-            </Link>
-          </div>
 
           <Button
             type="submit"

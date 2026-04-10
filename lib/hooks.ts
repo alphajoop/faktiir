@@ -22,99 +22,86 @@ export const qk = {
 };
 
 export function useClients(query?: ClientsQuery) {
-  const { token } = useAuth();
+  const { user } = useAuth();
   return useQuery({
     queryKey: qk.clients(query),
-    queryFn: () => clients.list(token as string, query),
-    enabled: !!token,
+    queryFn: () => clients.list(query),
+    enabled: !!user,
   });
 }
 
 export function useClient(id: string) {
-  const { token } = useAuth();
+  const { user } = useAuth();
   return useQuery({
     queryKey: qk.client(id),
-    queryFn: () => clients.get(id, token as string),
-    enabled: !!token && !!id,
+    queryFn: () => clients.get(id),
+    enabled: !!user && !!id,
   });
 }
 
 export function useCreateClient() {
-  const { token } = useAuth();
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (body: Omit<Client, 'id' | 'userId'>) =>
-      clients.create(
-        {
-          ...body,
-          email: body.email ?? undefined,
-          address: body.address ?? undefined,
-          phone: body.phone ?? undefined,
-        },
-        token as string,
-      ),
+      clients.create({
+        ...body,
+        email: body.email ?? undefined,
+        address: body.address ?? undefined,
+        phone: body.phone ?? undefined,
+      }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['clients'] }),
   });
 }
 
 export function useUpdateClient() {
-  const { token } = useAuth();
   const qc = useQueryClient();
   return useMutation({
     mutationFn: ({ id, ...body }: Partial<Client> & { id: string }) =>
-      clients.update(
-        id,
-        {
-          ...body,
-          email: body.email ?? undefined,
-          address: body.address ?? undefined,
-          phone: body.phone ?? undefined,
-        },
-        token as string,
-      ),
+      clients.update(id, {
+        ...body,
+        email: body.email ?? undefined,
+        address: body.address ?? undefined,
+        phone: body.phone ?? undefined,
+      }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['clients'] }),
   });
 }
 
 export function useDeleteClient() {
-  const { token } = useAuth();
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => clients.remove(id, token as string),
+    mutationFn: (id: string) => clients.remove(id),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['clients'] }),
   });
 }
 
 export function useInvoices(query?: InvoicesQuery) {
-  const { token } = useAuth();
+  const { user } = useAuth();
   return useQuery({
     queryKey: qk.invoices(query),
-    queryFn: () => invoices.list(token as string, query),
-    enabled: !!token,
+    queryFn: () => invoices.list(query),
+    enabled: !!user,
   });
 }
 
 export function useInvoice(id: string) {
-  const { token } = useAuth();
+  const { user } = useAuth();
   return useQuery({
     queryKey: qk.invoice(id),
-    queryFn: () => invoices.get(id, token as string),
-    enabled: !!token && !!id,
+    queryFn: () => invoices.get(id),
+    enabled: !!user && !!id,
   });
 }
 
 export function useCreateInvoice() {
-  const { token } = useAuth();
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (body: CreateInvoiceBody) =>
-      invoices.create(body, token as string),
+    mutationFn: (body: CreateInvoiceBody) => invoices.create(body),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['invoices'] }),
   });
 }
 
 export function useUpdateInvoice() {
-  const { token } = useAuth();
   const qc = useQueryClient();
   return useMutation({
     mutationFn: ({
@@ -122,7 +109,7 @@ export function useUpdateInvoice() {
       ...body
     }: Partial<CreateInvoiceBody & { status: InvoiceStatus }> & {
       id: string;
-    }) => invoices.update(id, body, token as string),
+    }) => invoices.update(id, body),
     onSuccess: (_, { id }) => {
       qc.invalidateQueries({ queryKey: ['invoices'] });
       qc.invalidateQueries({ queryKey: qk.invoice(id) });
@@ -131,38 +118,33 @@ export function useUpdateInvoice() {
 }
 
 export function useDeleteInvoice() {
-  const { token } = useAuth();
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (id: string) => invoices.remove(id, token as string),
+    mutationFn: (id: string) => invoices.remove(id),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['invoices'] }),
   });
 }
 
 export function useProfile() {
-  const { token } = useAuth();
+  const { user } = useAuth();
   return useQuery({
     queryKey: qk.profile,
-    queryFn: () => users.profile(token as string),
-    enabled: !!token,
+    queryFn: () => users.profile(),
+    enabled: !!user,
   });
 }
 
 export function useUpdateProfile() {
-  const { token } = useAuth();
   const qc = useQueryClient();
   return useMutation({
     mutationFn: (
       body: Partial<Pick<User, 'name' | 'companyName' | 'logoUrl'>>,
     ) =>
-      users.update(
-        {
-          ...body,
-          companyName: body.companyName ?? undefined,
-          logoUrl: body.logoUrl ?? undefined,
-        },
-        token as string,
-      ),
+      users.update({
+        ...body,
+        companyName: body.companyName ?? undefined,
+        logoUrl: body.logoUrl ?? undefined,
+      }),
     onSuccess: () => qc.invalidateQueries({ queryKey: qk.profile }),
   });
 }
@@ -180,12 +162,12 @@ export function useVerifyOtp() {
 }
 
 export function useResetPassword() {
-  const { login } = useAuth();
+  const { setUser } = useAuth();
   return useMutation({
     mutationFn: (body: { email: string; otp: string; newPassword: string }) =>
       auth.resetPassword(body),
     onSuccess: (data) => {
-      login(data.access_token, data.user);
+      setUser(data.user);
     },
   });
 }

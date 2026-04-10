@@ -25,13 +25,13 @@ const registerSchema = z.object({
 
 export default function RegisterPage() {
   const router = useRouter();
-  const { login } = useAuth();
+  const { setUser } = useAuth();
 
   const mutation = useMutation({
     mutationFn: (values: z.infer<typeof registerSchema>) =>
       auth.register(values),
     onSuccess: (data) => {
-      login(data.access_token, data.user);
+      setUser(data.user);
       router.push('/dashboard');
     },
     onError: (err) => {
