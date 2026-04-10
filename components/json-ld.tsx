@@ -14,7 +14,7 @@ export function JsonLd() {
           width: 1200,
           height: 630,
         },
-        sameAs: ['https://github.com/faktiir'],
+        sameAs: ['https://github.com/alphajoop/faktiir'],
       },
       // WebSite with SearchAction
       {

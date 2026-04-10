@@ -210,7 +210,7 @@ export default function Home() {
               className="h-11 px-6 text-base"
             >
               <a
-                href="https://github.com/faktiir"
+                href="https://github.com/alphajoop/faktiir"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -389,7 +389,7 @@ export default function Home() {
               <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
                 <Button variant="outline" asChild className="gap-2">
                   <a
-                    href="https://github.com/faktiir"
+                    href="https://github.com/alphajoop/faktiir"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -479,7 +479,7 @@ export default function Home() {
               Inscription
             </Link>
             <a
-              href="https://github.com/faktiir"
+              href="https://github.com/alphajoop/faktiir"
               target="_blank"
               rel="noopener noreferrer"
               className="hover:text-foreground transition-colors"
