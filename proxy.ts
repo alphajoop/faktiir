@@ -13,11 +13,12 @@ export function proxy(request: NextRequest) {
   const token = request.cookies.get('faktiir_token')?.value;
   const isAuthenticated = !!token;
 
-  // Handle root route
+  // Root: authenticated users go to dashboard, others see the landing page
   if (pathname === '/') {
-    return isAuthenticated
-      ? NextResponse.redirect(new URL('/dashboard', request.url))
-      : NextResponse.redirect(new URL('/login', request.url));
+    if (isAuthenticated) {
+      return NextResponse.redirect(new URL('/dashboard', request.url));
+    }
+    return NextResponse.next();
   }
 
   const isProtected = PROTECTED_PREFIXES.some((prefix) =>
