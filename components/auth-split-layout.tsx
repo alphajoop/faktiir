@@ -46,11 +46,11 @@ export function AuthSplitLayout({
               alt={imageAlt}
               fill
               sizes="calc(100vw - 3rem)"
-              className="object-cover brightness-[0.8] dark:brightness-[0.8] dark:grayscale"
+              className="object-cover brightness-[0.4] dark:grayscale-75"
               loading="eager"
               priority
             />
-            <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/20 to-transparent" />
+            <div className="absolute inset-0 bg-primary/15" />
             {tagline && (
               <p className="absolute bottom-3 left-4 right-4 text-xs font-medium leading-snug text-background dark:text-foreground">
                 {tagline}
@@ -74,12 +74,13 @@ export function AuthSplitLayout({
           alt={imageAlt}
           fill
           sizes="(min-width: 1024px) 56vw, 100vw"
-          className="object-cover brightness-[0.8] dark:brightness-[0.8] dark:grayscale"
+          className="object-cover brightness-[0.4] dark:grayscale-75"
           loading="eager"
           priority
         />
+
         {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-linear-to-br from-black/40 via-black/20 to-black/60" />
+        <div className="absolute inset-0 bg-primary/15" />
 
         {/* Tagline overlay */}
         {tagline && (
