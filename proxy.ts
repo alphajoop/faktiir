@@ -8,22 +8,29 @@ const PROTECTED_PREFIXES = ['/dashboard'];
 const AUTH_ONLY_ROUTES = ['/login', '/register', '/forgot-password'];
 
 export function proxy(request: NextRequest) {
-  const { pathname } = request.nextUrl;
+  const { pathname, search } = request.nextUrl;
+
   const token = request.cookies.get('faktiir_token')?.value;
   const isAuthenticated = !!token;
 
-  // 1. Protect dashboard routes — redirect to login if no cookie
+  // Handle root route
+  if (pathname === '/') {
+    return isAuthenticated
+      ? NextResponse.redirect(new URL('/dashboard', request.url))
+      : NextResponse.redirect(new URL('/login', request.url));
+  }
+
   const isProtected = PROTECTED_PREFIXES.some((prefix) =>
     pathname.startsWith(prefix),
   );
 
   if (isProtected && !isAuthenticated) {
     const loginUrl = new URL('/login', request.url);
-    loginUrl.searchParams.set('from', pathname);
+    loginUrl.searchParams.set('from', pathname + search);
     return NextResponse.redirect(loginUrl);
   }
 
-  // 2. Auth routes — redirect to dashboard if already logged in
+  // Prevent access to auth pages when logged in
   const isAuthRoute = AUTH_ONLY_ROUTES.some(
     (route) => pathname === route || pathname.startsWith(`${route}/`),
   );

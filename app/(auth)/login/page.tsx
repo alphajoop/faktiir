@@ -136,7 +136,7 @@ function LoginPageContent({ searchParams }: { searchParams: URLSearchParams }) {
                 <Input
                   id={field.name}
                   type="password"
-                  placeholder="###"
+                  placeholder="••••••••"
                   value={field.state.value}
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
