@@ -5,7 +5,7 @@ import FaktiirIcon from '@/components/icons/faktiir-icon';
 import { ModeToggle } from '@/components/mode-toggle';
 import { Button } from '@/components/ui/button';
 
-export function LandingNavbar() {
+export function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-transparent bg-background/80 backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 md:px-6">

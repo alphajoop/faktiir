@@ -4,7 +4,6 @@ import {
   DownloadIcon,
   FileTextIcon,
   LayoutDashboardIcon,
-  ReceiptIcon,
   ShieldCheckIcon,
   UsersIcon,
   ZapIcon,
@@ -12,97 +11,10 @@ import {
 import Link from 'next/link';
 import FaktiirIcon from '@/components/icons/faktiir-icon';
 import { GithubIcon } from '@/components/icons/github-icon';
-import { LandingNavbar } from '@/components/landing-navbar';
-import { Reveal } from '@/components/reveal';
+import { AppPreview } from '@/components/landing/app-preview';
+import { Navbar } from '@/components/landing/navbar';
+import { Reveal } from '@/components/landing/reveal';
 import { Button } from '@/components/ui/button';
-
-function AppPreview() {
-  return (
-    <div className="relative w-full max-w-3xl mx-auto">
-      {/* Glow */}
-      <div
-        aria-hidden
-        className="absolute -inset-px rounded-2xl bg-primary/20 blur-2xl opacity-60"
-      />
-      {/* Card */}
-      <div className="relative rounded-2xl border border-border bg-card shadow-2xl overflow-hidden">
-        {/* Browser chrome */}
-        <div className="flex items-center gap-2 border-b border-border bg-muted/50 px-4 py-3">
-          <div className="size-3 rounded-full bg-red-400/70" />
-          <div className="size-3 rounded-full bg-yellow-400/70" />
-          <div className="size-3 rounded-full bg-green-400/70" />
-          <div className="ml-3 h-5 flex-1 rounded-full bg-muted" />
-        </div>
-
-        {/* Fake dashboard */}
-        <div className="flex h-72">
-          {/* Sidebar */}
-          <div className="hidden w-44 shrink-0 border-r border-border bg-sidebar sm:flex flex-col gap-1 p-3">
-            {[
-              {
-                icon: LayoutDashboardIcon,
-                label: 'Tableau de bord',
-                active: false,
-              },
-              { icon: ReceiptIcon, label: 'Factures', active: true },
-              { icon: UsersIcon, label: 'Clients', active: false },
-            ].map((item) => (
-              <div
-                key={item.label}
-                className={`flex items-center gap-2 rounded-md px-2.5 py-1.5 text-xs ${
-                  item.active
-                    ? 'bg-sidebar-accent text-sidebar-accent-foreground font-medium'
-                    : 'text-sidebar-foreground/60'
-                }`}
-              >
-                <item.icon className="size-3.5 shrink-0" />
-                <span>{item.label}</span>
-              </div>
-            ))}
-          </div>
-
-          {/* Content */}
-          <div className="flex-1 p-4 flex flex-col gap-3 overflow-hidden">
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="h-4 w-20 rounded bg-muted mb-1" />
-                <div className="h-2.5 w-14 rounded bg-muted/60" />
-              </div>
-              <div className="h-7 w-28 rounded-md bg-primary/80" />
-            </div>
-
-            <div className="grid grid-cols-4 gap-2 border-b border-border pb-2">
-              {['Numéro', 'Client', 'Statut', 'Montant'].map((h) => (
-                <div key={h} className="h-2.5 w-full rounded bg-muted/40" />
-              ))}
-            </div>
-
-            {[
-              { badge: 'Payée', color: 'bg-green-500/20 text-green-600' },
-              { badge: 'Envoyée', color: 'bg-blue-500/20 text-blue-600' },
-              { badge: 'En retard', color: 'bg-red-500/20 text-red-600' },
-              { badge: 'Brouillon', color: 'bg-muted text-muted-foreground' },
-            ].map((row) => (
-              <div
-                key={row.badge}
-                className="grid grid-cols-4 gap-2 items-center py-1"
-              >
-                <div className="h-2.5 w-16 rounded bg-muted/60" />
-                <div className="h-2.5 w-full rounded bg-muted/40" />
-                <div
-                  className={`h-4 w-16 rounded-full px-2 text-[9px] font-medium flex items-center justify-center ${row.color}`}
-                >
-                  {row.badge}
-                </div>
-                <div className="h-2.5 w-14 rounded bg-muted/60 ml-auto" />
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 function FeatureCard({
   icon: Icon,
@@ -159,43 +71,37 @@ function Step({
 export default function Home() {
   return (
     <div className="min-h-svh bg-background">
-      <LandingNavbar />
+      <Navbar />
 
       {/* ── Hero ── */}
       <section className="relative overflow-hidden px-4 pb-24 pt-20 md:pb-32 md:pt-24">
-        {/* Glow blob */}
         <div
           aria-hidden
           className="pointer-events-none absolute left-1/2 top-0 -z-10 h-[500px] w-[800px] -translate-x-1/2 rounded-full bg-primary/8 blur-3xl"
         />
-        {/* Grid texture */}
         <div
           aria-hidden
           className="landing-grid-bg pointer-events-none absolute inset-0 -z-10 opacity-[0.03] dark:opacity-[0.06]"
         />
 
         <div className="mx-auto max-w-4xl text-center">
-          {/* Badge */}
           <div className="hero-animate-1 mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-muted/60 px-3.5 py-1.5 text-xs font-medium text-muted-foreground">
             <GithubIcon className="size-3" />
             Open source · Gratuit · Sans engagement
           </div>
 
-          {/* H1 */}
           <h1 className="hero-animate-2 font-heading text-4xl font-semibold tracking-tight text-foreground sm:text-5xl md:text-6xl lg:text-7xl">
             La facturation
             <br />
             <span className="text-primary">qui ne vous ralentit pas.</span>
           </h1>
 
-          {/* Subhead */}
           <p className="hero-animate-3 mx-auto mt-6 max-w-xl text-base text-muted-foreground sm:text-lg">
             Créez, envoyez et gérez vos factures professionnelles en quelques
             secondes. Conçu pour les freelances et petites entreprises d'Afrique
             francophone.
           </p>
 
-          {/* CTAs */}
           <div className="hero-animate-4 mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Button size="lg" asChild className="h-11 px-6 text-base">
               <Link href="/register">
@@ -205,7 +111,7 @@ export default function Home() {
             </Button>
             <Button
               size="lg"
-              variant="outline"
+              variant="secondary"
               asChild
               className="h-11 px-6 text-base"
             >
@@ -219,7 +125,6 @@ export default function Home() {
             </Button>
           </div>
 
-          {/* Trust */}
           <p className="hero-animate-5 mt-5 text-xs text-muted-foreground/60">
             Aucune carte bancaire requise · Exportez vos données à tout moment
           </p>
@@ -375,7 +280,6 @@ export default function Home() {
               >
                 <FaktiirIcon className="size-40 text-primary" />
               </div>
-
               <p className="mb-2 text-xs font-medium uppercase tracking-widest text-primary">
                 Open Source
               </p>
@@ -387,7 +291,7 @@ export default function Home() {
                 auto-hébergez Faktiir sur votre propre infrastructure.
               </p>
               <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-                <Button variant="outline" asChild className="gap-2">
+                <Button variant="ghost" asChild className="gap-2">
                   <a
                     href="https://github.com/alphajoop/faktiir"
                     target="_blank"

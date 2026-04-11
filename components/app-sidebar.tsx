@@ -24,6 +24,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarSeparator,
+  useSidebar,
 } from '@/components/ui/sidebar';
 import { Text } from '@/components/ui/typography';
 import { useAuth } from '@/lib/auth-context';
@@ -39,10 +40,17 @@ export function AppSidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const { user, logout } = useAuth();
+  const { isMobile, setOpenMobile } = useSidebar();
 
   const handleLogout = async () => {
     await logout();
     router.push('/login');
+  };
+
+  const handleLinkClick = () => {
+    if (isMobile) {
+      setOpenMobile(false);
+    }
   };
 
   return (
@@ -83,7 +91,7 @@ export function AppSidebar() {
                       isActive={isActive}
                       tooltip={item.label}
                     >
-                      <Link href={item.href}>
+                      <Link href={item.href} onClick={handleLinkClick}>
                         <item.icon />
                         <span>{item.label}</span>
                       </Link>
@@ -105,7 +113,7 @@ export function AppSidebar() {
               isActive={pathname === '/dashboard/settings'}
               tooltip="Paramètres"
             >
-              <Link href="/dashboard/settings">
+              <Link href="/dashboard/settings" onClick={handleLinkClick}>
                 <SettingsIcon />
                 <span>Paramètres</span>
               </Link>
