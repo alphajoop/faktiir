@@ -4,6 +4,7 @@ import { PlusIcon, UsersIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useCallback, useState } from 'react';
 import { EmptyState } from '@/components/empty-state';
+import { ErrorState } from '@/components/error-state';
 import { Button } from '@/components/ui/button';
 import {
   DataTable,
@@ -13,6 +14,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { useDebounce } from '@/hooks/use-debounce';
 import type { ClientsQuery } from '@/lib/api';
+import { classifyError } from '@/lib/error-utils';
 import { useClients } from '@/lib/hooks';
 import { getClientColumns } from './columns';
 
@@ -35,7 +37,7 @@ export function ClientsDataTable() {
     order,
   };
 
-  const { data, isLoading } = useClients(query);
+  const { data, isLoading, isError, error, refetch } = useClients(query);
 
   const handleSort = useCallback(
     (field: SortField) => {
@@ -56,6 +58,8 @@ export function ClientsDataTable() {
   const totalPages = data?.totalPages ?? 1;
   const total = data?.total ?? 0;
 
+  const errorInfo = isError ? classifyError(error) : null;
+
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 md:p-6">
       <Input
@@ -71,6 +75,13 @@ export function ClientsDataTable() {
       <div className="rounded-xl border border-border bg-card overflow-hidden">
         {isLoading ? (
           <DataTableSkeleton rows={5} cols={['w-28', 'w-36', 'w-24', 'w-32']} />
+        ) : errorInfo ? (
+          <ErrorState
+            title={errorInfo.title}
+            description={errorInfo.description}
+            icon={errorInfo.icon}
+            onRetry={refetch}
+          />
         ) : (
           <DataTable
             columns={columns}
@@ -101,7 +112,7 @@ export function ClientsDataTable() {
         )}
       </div>
 
-      {!isLoading && (
+      {!isLoading && !errorInfo && (
         <DataTablePagination
           page={page}
           totalPages={totalPages}
