@@ -8,12 +8,14 @@ import {
   UsersIcon,
 } from 'lucide-react';
 import Link from 'next/link';
+import { ErrorState } from '@/components/error-state';
 import { PageHeader } from '@/components/page-header';
 import { StatusBadge } from '@/components/status-badge';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Caption, Text } from '@/components/ui/typography';
 import { useAuth } from '@/lib/auth-context';
+import { classifyError } from '@/lib/error-utils';
 import { formatCurrency, formatDate } from '@/lib/format';
 import { useClients, useInvoices } from '@/lib/hooks';
 
@@ -50,15 +52,27 @@ function StatCard({
   );
 }
 
-function RecentInvoicesSkeleton() {
-  let skeletonCounter = 0;
+function StatCardSkeleton() {
+  return (
+    <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4">
+      <div className="flex items-center justify-between">
+        <Skeleton className="h-3 w-24" />
+        <Skeleton className="size-7 rounded-md" />
+      </div>
+      <Skeleton className="h-7 w-24" />
+      <Skeleton className="h-3 w-16" />
+    </div>
+  );
+}
 
+function RecentInvoicesSkeleton() {
+  let counter = 0;
   return (
     <div className="flex flex-col divide-y divide-border">
       {Array.from({ length: 4 }).map(() => {
-        const skeletonId = `recent-invoice-skeleton-${++skeletonCounter}`;
+        const id = `skeleton-${++counter}`;
         return (
-          <div key={skeletonId} className="flex items-center gap-3 px-4 py-3">
+          <div key={id} className="flex items-center gap-3 px-4 py-3">
             <Skeleton className="h-4 w-24" />
             <Skeleton className="h-4 w-16 ml-auto" />
             <Skeleton className="h-5 w-14" />
@@ -71,17 +85,30 @@ function RecentInvoicesSkeleton() {
 
 export default function DashboardPage() {
   const { user } = useAuth();
-  const { data: invoicesData, isLoading: loadingInvoices } = useInvoices();
-  const { data: clientsData, isLoading: loadingClients } = useClients();
+  const {
+    data: invoicesData,
+    isLoading: loadingInvoices,
+    isError: invoicesError,
+    error: invoicesErr,
+    refetch: refetchInvoices,
+  } = useInvoices();
+
+  const {
+    data: clientsData,
+    isLoading: loadingClients,
+    isError: clientsError,
+    error: clientsErr,
+    refetch: refetchClients,
+  } = useClients();
 
   const invoiceList = invoicesData?.data ?? [];
   const clientList = clientsData?.data ?? [];
 
-  const paid = invoiceList?.filter((i) => i.status === 'PAID') ?? [];
-  const overdue = invoiceList?.filter((i) => i.status === 'OVERDUE') ?? [];
-  const pending =
-    invoiceList?.filter((i) => i.status === 'SENT' || i.status === 'DRAFT') ??
-    [];
+  const paid = invoiceList.filter((i) => i.status === 'PAID');
+  const overdue = invoiceList.filter((i) => i.status === 'OVERDUE');
+  const pending = invoiceList.filter(
+    (i) => i.status === 'SENT' || i.status === 'DRAFT',
+  );
   const totalRevenue = paid.reduce((s, i) => s + i.total, 0);
 
   const recent = [...invoiceList]
@@ -94,6 +121,9 @@ export default function DashboardPage() {
   const hour = new Date().getHours();
   const greeting =
     hour < 12 ? 'Bonjour' : hour < 18 ? 'Bon après-midi' : 'Bonsoir';
+
+  const invoicesClassified = invoicesError ? classifyError(invoicesErr) : null;
+  const clientsClassified = clientsError ? classifyError(clientsErr) : null;
 
   return (
     <>
@@ -121,33 +151,52 @@ export default function DashboardPage() {
 
         {/* Stats */}
         <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-          <StatCard
-            label="Chiffre d'affaires"
-            value={formatCurrency(totalRevenue)}
-            icon={TrendingUpIcon}
-            sub={`${paid.length} facture${paid.length > 1 ? 's' : ''} payée${paid.length > 1 ? 's' : ''}`}
-            loading={loadingInvoices}
-          />
-          <StatCard
-            label="En attente"
-            value={String(pending.length)}
-            icon={ClockIcon}
-            sub="factures à traiter"
-            loading={loadingInvoices}
-          />
-          <StatCard
-            label="En retard"
-            value={String(overdue.length)}
-            icon={FileTextIcon}
-            sub="à relancer"
-            loading={loadingInvoices}
-          />
-          <StatCard
-            label="Clients"
-            value={String(clientList?.length ?? 0)}
-            icon={UsersIcon}
-            loading={loadingClients}
-          />
+          {loadingInvoices || loadingClients ? (
+            <>
+              <StatCardSkeleton />
+              <StatCardSkeleton />
+              <StatCardSkeleton />
+              <StatCardSkeleton />
+            </>
+          ) : invoicesClassified ? (
+            <div className="col-span-2 md:col-span-4">
+              <ErrorState
+                title={invoicesClassified.title}
+                description={invoicesClassified.description}
+                icon={invoicesClassified.icon}
+                onRetry={() => {
+                  refetchInvoices();
+                  refetchClients();
+                }}
+              />
+            </div>
+          ) : (
+            <>
+              <StatCard
+                label="Chiffre d'affaires"
+                value={formatCurrency(totalRevenue)}
+                icon={TrendingUpIcon}
+                sub={`${paid.length} facture${paid.length > 1 ? 's' : ''} payée${paid.length > 1 ? 's' : ''}`}
+              />
+              <StatCard
+                label="En attente"
+                value={String(pending.length)}
+                icon={ClockIcon}
+                sub="factures à traiter"
+              />
+              <StatCard
+                label="En retard"
+                value={String(overdue.length)}
+                icon={FileTextIcon}
+                sub="à relancer"
+              />
+              <StatCard
+                label="Clients"
+                value={clientsClassified ? '—' : String(clientList.length ?? 0)}
+                icon={UsersIcon}
+              />
+            </>
+          )}
         </div>
 
         {/* Recent invoices */}
@@ -164,6 +213,13 @@ export default function DashboardPage() {
           <div className="rounded-xl border border-border bg-card overflow-hidden">
             {loadingInvoices ? (
               <RecentInvoicesSkeleton />
+            ) : invoicesClassified ? (
+              <ErrorState
+                title={invoicesClassified.title}
+                description={invoicesClassified.description}
+                icon={invoicesClassified.icon}
+                onRetry={refetchInvoices}
+              />
             ) : recent.length === 0 ? (
               <div className="flex flex-col items-center gap-2 py-12 text-center">
                 <FileTextIcon className="size-8 text-muted-foreground/40" />

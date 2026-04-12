@@ -12,7 +12,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
         defaultOptions: {
           queries: {
             staleTime: 30_000,
-            retry: 1,
+            retry: false,
+            retryOnMount: false,
+          },
+          mutations: {
+            retry: false,
           },
         },
       }),

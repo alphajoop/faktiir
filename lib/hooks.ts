@@ -22,20 +22,20 @@ export const qk = {
 };
 
 export function useClients(query?: ClientsQuery) {
-  const { user } = useAuth();
+  const { isLoading: authLoading } = useAuth();
   return useQuery({
     queryKey: qk.clients(query),
     queryFn: () => clients.list(query),
-    enabled: !!user,
+    enabled: !authLoading,
   });
 }
 
 export function useClient(id: string) {
-  const { user } = useAuth();
+  const { isLoading: authLoading } = useAuth();
   return useQuery({
     queryKey: qk.client(id),
     queryFn: () => clients.get(id),
-    enabled: !!user && !!id,
+    enabled: !authLoading && !!id,
   });
 }
 
@@ -76,20 +76,20 @@ export function useDeleteClient() {
 }
 
 export function useInvoices(query?: InvoicesQuery) {
-  const { user } = useAuth();
+  const { isLoading: authLoading } = useAuth();
   return useQuery({
     queryKey: qk.invoices(query),
     queryFn: () => invoices.list(query),
-    enabled: !!user,
+    enabled: !authLoading,
   });
 }
 
 export function useInvoice(id: string) {
-  const { user } = useAuth();
+  const { isLoading: authLoading } = useAuth();
   return useQuery({
     queryKey: qk.invoice(id),
     queryFn: () => invoices.get(id),
-    enabled: !!user && !!id,
+    enabled: !authLoading && !!id,
   });
 }
 
@@ -126,11 +126,11 @@ export function useDeleteInvoice() {
 }
 
 export function useProfile() {
-  const { user } = useAuth();
+  const { isLoading: authLoading } = useAuth();
   return useQuery({
     queryKey: qk.profile,
     queryFn: () => users.profile(),
-    enabled: !!user,
+    enabled: !authLoading,
   });
 }
 
