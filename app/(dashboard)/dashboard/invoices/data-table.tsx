@@ -4,6 +4,7 @@ import { FileTextIcon, PlusIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useCallback, useState } from 'react';
 import { EmptyState } from '@/components/empty-state';
+import { ErrorState } from '@/components/error-state';
 import { Button } from '@/components/ui/button';
 import {
   DataTable,
@@ -20,6 +21,7 @@ import {
 } from '@/components/ui/select';
 import { useDebounce } from '@/hooks/use-debounce';
 import type { InvoiceStatus, InvoicesQuery } from '@/lib/api';
+import { classifyError } from '@/lib/error-utils';
 import { useInvoices } from '@/lib/hooks';
 import { getInvoiceColumns } from './columns';
 
@@ -54,7 +56,7 @@ export function InvoicesDataTable() {
     order,
   };
 
-  const { data, isLoading } = useInvoices(query);
+  const { data, isLoading, isError, error, refetch } = useInvoices(query);
 
   const handleSort = useCallback(
     (field: SortField) => {
@@ -75,6 +77,8 @@ export function InvoicesDataTable() {
   const totalPages = data?.totalPages ?? 1;
   const total = data?.total ?? 0;
   const hasFilters = !!search || statusFilter !== 'ALL';
+
+  const errorInfo = isError ? classifyError(error) : null;
 
   return (
     <div className="flex flex-1 flex-col gap-4 p-4 md:p-6">
@@ -129,6 +133,13 @@ export function InvoicesDataTable() {
             rows={6}
             cols={['w-20', 'w-28', 'w-16', 'w-16', 'w-14', 'w-20']}
           />
+        ) : errorInfo ? (
+          <ErrorState
+            title={errorInfo.title}
+            description={errorInfo.description}
+            icon={errorInfo.icon}
+            onRetry={refetch}
+          />
         ) : (
           <DataTable
             columns={columns}
@@ -159,7 +170,7 @@ export function InvoicesDataTable() {
         )}
       </div>
 
-      {!isLoading && (
+      {!isLoading && !errorInfo && (
         <DataTablePagination
           page={page}
           totalPages={totalPages}

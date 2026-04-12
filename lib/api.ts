@@ -47,7 +47,7 @@ export interface Invoice {
 
 export interface AuthResponse {
   user: User;
-  access_token: string; // Still returned for API clients / Swagger
+  access_token: string;
 }
 
 export interface PaginatedResponse<T> {
@@ -84,7 +84,7 @@ export interface InvoicesQuery {
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://api.faktiir.com';
 
-class ApiError extends Error {
+export class ApiError extends Error {
   constructor(
     public status: number,
     message: string,
@@ -93,6 +93,9 @@ class ApiError extends Error {
     this.name = 'ApiError';
   }
 }
+
+// Fired when the server returns 401 — auth-context listens to this
+export const SESSION_EXPIRED_EVENT = 'faktiir:session-expired';
 
 function buildUrl(path: string, params?: Record<string, unknown>): string {
   const url = new URL(`${BASE_URL}${path}`);
@@ -118,11 +121,25 @@ async function request<T>(
   };
 
   const url = buildUrl(path, params);
-  const res = await fetch(url, {
-    ...options,
-    headers,
-    credentials: 'include', // sends the httpOnly cookie on every request
-  });
+
+  let res: Response;
+  try {
+    res = await fetch(url, {
+      ...options,
+      headers,
+      credentials: 'include',
+    });
+  } catch {
+    throw new ApiError(0, 'Serveur inaccessible. Vérifiez votre connexion.');
+  }
+
+  // Session expirée
+  if (res.status === 401 && path !== '/auth/me') {
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent(SESSION_EXPIRED_EVENT));
+    }
+    throw new ApiError(401, 'Session expirée. Veuillez vous reconnecter.');
+  }
 
   if (!res.ok) {
     let message = res.statusText;
@@ -246,5 +263,3 @@ export const users = {
       body: JSON.stringify(body),
     }),
 };
-
-export { ApiError };
