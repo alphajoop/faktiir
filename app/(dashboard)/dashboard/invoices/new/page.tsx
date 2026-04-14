@@ -30,12 +30,12 @@ const invoiceSchema = z.object({
   items: z
     .array(
       z.object({
-        description: z.string().min(1, 'Requis'),
-        quantity: z.number().min(1, '≥ 1'),
-        unitPrice: z.number().min(0, '≥ 0'),
+        description: z.string().min(1, 'Description requise'),
+        quantity: z.number().min(1, 'Quantité ≥ 1'),
+        unitPrice: z.number().min(0, 'Prix ≥ 0'),
       }),
     )
-    .min(1, 'Au moins une ligne'),
+    .min(1, 'Au moins une ligne est requise'),
 });
 
 export default function NewInvoicePage() {
@@ -110,9 +110,36 @@ export default function NewInvoicePage() {
                 issueDate={values.issueDate}
                 dueDate={values.dueDate}
                 clientIdError={errors.clientId}
-                onClientChange={(v) => form.setFieldValue('clientId', v)}
-                onIssueDateChange={(v) => form.setFieldValue('issueDate', v)}
-                onDueDateChange={(v) => form.setFieldValue('dueDate', v)}
+                onClientChange={(v) => {
+                  form.setFieldValue('clientId', v);
+                  if (v && errors.clientId) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors.clientId;
+                      return newErrors;
+                    });
+                  }
+                }}
+                onIssueDateChange={(v) => {
+                  form.setFieldValue('issueDate', v);
+                  if (v && errors.issueDate) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors.issueDate;
+                      return newErrors;
+                    });
+                  }
+                }}
+                onDueDateChange={(v) => {
+                  form.setFieldValue('dueDate', v);
+                  if (v && errors.dueDate) {
+                    setErrors((prev) => {
+                      const newErrors = { ...prev };
+                      delete newErrors.dueDate;
+                      return newErrors;
+                    });
+                  }
+                }}
               />
             )}
           </form.Subscribe>
@@ -122,6 +149,8 @@ export default function NewInvoicePage() {
             tax={tax}
             onItemsChange={setItems}
             onTaxChange={setTax}
+            errors={errors}
+            onErrorsChange={setErrors}
           />
 
           <form.Field name="notes">
