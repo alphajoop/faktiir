@@ -3,6 +3,7 @@
 import { PlusIcon, TrashIcon } from 'lucide-react';
 import { ConfirmDialog } from '@/components/confirm-dialog';
 import { InvoiceTotals } from '@/components/invoice-totals';
+import { NumericInput } from '@/components/numeric-input';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
@@ -35,14 +36,12 @@ export function InvoiceItemsEditor({
   const updateItem = (
     idx: number,
     field: keyof Omit<InvoiceLineItem, 'id'>,
-    raw: string,
+    value: string | number,
   ) => {
     onItemsChange(
       items.map((item, i) => {
         if (i !== idx) return item;
-        if (field === 'description') return { ...item, description: raw };
-        const num = parseFloat(raw);
-        return { ...item, [field]: Number.isNaN(num) ? 0 : num };
+        return { ...item, [field]: value };
       }),
     );
   };
@@ -84,23 +83,26 @@ export function InvoiceItemsEditor({
               value={item.description}
               onChange={(e) => updateItem(idx, 'description', e.target.value)}
             />
-            <Input
-              type="number"
+
+            {/* Quantité — entiers uniquement */}
+            <NumericInput
+              value={item.quantity}
+              onChange={(v) => updateItem(idx, 'quantity', v)}
               min={1}
               placeholder="1"
-              value={item.quantity}
-              onChange={(e) => updateItem(idx, 'quantity', e.target.value)}
-              className="text-right tabular-nums"
+              allowDecimal={false}
             />
-            <Input
-              type="number"
-              min={0}
-              step="0.01"
-              placeholder="0"
+
+            {/* Prix unitaire — décimaux autorisés */}
+            <NumericInput
               value={item.unitPrice}
-              onChange={(e) => updateItem(idx, 'unitPrice', e.target.value)}
-              className="text-right tabular-nums"
+              onChange={(v) => updateItem(idx, 'unitPrice', v)}
+              min={0}
+              placeholder="0"
+              allowDecimal
             />
+
+            {/* Total ligne */}
             <div className="flex h-9 items-center justify-end">
               <Text size="sm" weight="medium" className="tabular-nums">
                 {formatCurrency(item.quantity * item.unitPrice)}
