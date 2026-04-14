@@ -22,6 +22,10 @@ interface InvoiceItemsEditorProps {
   onTaxChange: (tax: number) => void;
   /** When true, deletion requires a confirm dialog */
   confirmDelete?: boolean;
+  /** Erreurs indexées par chemin Zod, ex: { 'items.0.description': 'Requis' } */
+  errors?: Record<string, string>;
+  /** Callback pour nettoyer les erreurs */
+  onErrorsChange?: (errors: Record<string, string>) => void;
 }
 
 export function InvoiceItemsEditor({
@@ -30,6 +34,8 @@ export function InvoiceItemsEditor({
   onItemsChange,
   onTaxChange,
   confirmDelete = true,
+  errors = {},
+  onErrorsChange,
 }: InvoiceItemsEditorProps) {
   const { subtotal, taxAmount, total } = computeTotals(items, tax);
 
@@ -38,12 +44,22 @@ export function InvoiceItemsEditor({
     field: keyof Omit<InvoiceLineItem, 'id'>,
     value: string | number,
   ) => {
-    onItemsChange(
-      items.map((item, i) => {
-        if (i !== idx) return item;
-        return { ...item, [field]: value };
-      }),
+    const updatedItems = items.map((item, i) =>
+      i !== idx ? item : { ...item, [field]: value },
     );
+
+    // Nettoyer les erreurs pour ce champ spécifique
+    const errorKey = `items.${idx}.${field}`;
+    if (errors[errorKey]) {
+      // Créer un nouvel objet errors sans cette erreur
+      const newErrors = { ...errors };
+      delete newErrors[errorKey];
+
+      // Notifier le parent des erreurs mises à jour
+      onErrorsChange?.(newErrors);
+    }
+
+    onItemsChange(updatedItems);
   };
 
   const removeItem = (id: string) =>
@@ -51,12 +67,21 @@ export function InvoiceItemsEditor({
 
   const addItem = () => onItemsChange([...items, emptyItem()]);
 
+  const globalError = errors.items;
+
   return (
     <section className="rounded-xl border border-border bg-card p-5 flex flex-col gap-4">
       <div className="flex items-center justify-between">
-        <Text size="sm" weight="semibold">
-          Lignes de facturation
-        </Text>
+        <div className="flex flex-col gap-0.5">
+          <Text size="sm" weight="semibold">
+            Lignes de facturation
+          </Text>
+          {globalError && (
+            <Text size="xs" variant="destructive">
+              {globalError}
+            </Text>
+          )}
+        </div>
         <Button type="button" variant="outline" size="sm" onClick={addItem}>
           <PlusIcon />
           Ajouter
@@ -72,50 +97,93 @@ export function InvoiceItemsEditor({
         <span />
       </div>
 
-      <div className="flex flex-col gap-2">
-        {items.map((item, idx) => (
-          <div
-            key={item.id}
-            className="grid grid-cols-1 gap-2 sm:grid-cols-[1fr_80px_110px_80px_32px] items-start"
-          >
-            <Input
-              placeholder="Description du service ou produit"
-              value={item.description}
-              onChange={(e) => updateItem(idx, 'description', e.target.value)}
-            />
+      <div className="flex flex-col gap-3">
+        {items.map((item, idx) => {
+          const descError = errors[`items.${idx}.description`];
+          const qtyError = errors[`items.${idx}.quantity`];
+          const priceError = errors[`items.${idx}.unitPrice`];
 
-            {/* Quantité — entiers uniquement */}
-            <NumericInput
-              value={item.quantity}
-              onChange={(v) => updateItem(idx, 'quantity', v)}
-              min={1}
-              placeholder="1"
-              allowDecimal={false}
-            />
+          return (
+            <div key={item.id} className="flex flex-col gap-1.5">
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-[1fr_80px_110px_80px_32px] items-start">
+                <div className="flex flex-col gap-1">
+                  <Input
+                    placeholder="Description du service ou produit"
+                    value={item.description}
+                    onChange={(e) =>
+                      updateItem(idx, 'description', e.target.value)
+                    }
+                    aria-invalid={!!descError}
+                    className={
+                      descError
+                        ? 'border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20'
+                        : ''
+                    }
+                  />
+                  {descError && (
+                    <Text size="xs" variant="destructive">
+                      {descError}
+                    </Text>
+                  )}
+                </div>
 
-            {/* Prix unitaire — décimaux autorisés */}
-            <NumericInput
-              value={item.unitPrice}
-              onChange={(v) => updateItem(idx, 'unitPrice', v)}
-              min={0}
-              placeholder="0"
-              allowDecimal
-            />
+                <div className="flex flex-col gap-1">
+                  <NumericInput
+                    value={item.quantity}
+                    onChange={(v) => updateItem(idx, 'quantity', v)}
+                    min={1}
+                    placeholder="1"
+                    allowDecimal={false}
+                    className={
+                      qtyError
+                        ? 'border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20'
+                        : ''
+                    }
+                  />
+                  {qtyError && (
+                    <Text size="xs" variant="destructive">
+                      {qtyError}
+                    </Text>
+                  )}
+                </div>
 
-            {/* Total ligne */}
-            <div className="flex h-9 items-center justify-end">
-              <Text size="sm" weight="medium" className="tabular-nums">
-                {formatCurrency(item.quantity * item.unitPrice)}
-              </Text>
+                <div className="flex flex-col gap-1">
+                  <NumericInput
+                    value={item.unitPrice}
+                    onChange={(v) => updateItem(idx, 'unitPrice', v)}
+                    min={0}
+                    placeholder="0"
+                    allowDecimal
+                    className={
+                      priceError
+                        ? 'border-destructive focus-visible:border-destructive focus-visible:ring-destructive/20'
+                        : ''
+                    }
+                  />
+                  {priceError && (
+                    <Text size="xs" variant="destructive">
+                      {priceError}
+                    </Text>
+                  )}
+                </div>
+
+                <div className="flex h-9 items-center justify-end">
+                  <Text size="sm" weight="medium" className="tabular-nums">
+                    {formatCurrency(item.quantity * item.unitPrice)}
+                  </Text>
+                </div>
+
+                <div className="flex h-9 items-center">
+                  <DeleteButton
+                    disabled={items.length === 1}
+                    confirm={confirmDelete && items.length > 1}
+                    onConfirm={() => removeItem(item.id)}
+                  />
+                </div>
+              </div>
             </div>
-
-            <DeleteButton
-              disabled={items.length === 1}
-              confirm={confirmDelete && items.length > 1}
-              onConfirm={() => removeItem(item.id)}
-            />
-          </div>
-        ))}
+          );
+        })}
       </div>
 
       <Separator />
