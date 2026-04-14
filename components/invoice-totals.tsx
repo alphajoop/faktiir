@@ -1,4 +1,4 @@
-import { Input } from '@/components/ui/input';
+import { NumericInput } from '@/components/numeric-input';
 import { Separator } from '@/components/ui/separator';
 import { Caption, Text } from '@/components/ui/typography';
 import { formatCurrency } from '@/lib/format';
@@ -8,7 +8,6 @@ interface InvoiceTotalsProps {
   taxAmount: number;
   total: number;
   tax: number;
-  /** When provided, the tax field becomes editable */
   onTaxChange?: (value: number) => void;
 }
 
@@ -33,16 +32,17 @@ export function InvoiceTotals({
           {onTaxChange ? 'TVA (%)' : `TVA (${tax}%)`}
         </Caption>
         <div className="flex items-center gap-2">
-          {onTaxChange ? (
-            <Input
-              type="number"
+          {onTaxChange && (
+            <NumericInput
+              value={tax}
+              onChange={onTaxChange}
               min={0}
               max={100}
-              value={tax}
-              onChange={(e) => onTaxChange(parseFloat(e.target.value) || 0)}
-              className="w-20 text-right tabular-nums"
+              placeholder="0"
+              allowDecimal
+              className="w-20"
             />
-          ) : null}
+          )}
           <Text size="sm" className="tabular-nums shrink-0">
             {formatCurrency(taxAmount)}
           </Text>

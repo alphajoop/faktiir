@@ -6,7 +6,9 @@ import { Label } from '@/components/ui/label';
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
@@ -59,16 +61,19 @@ export function InvoiceGeneralSection({
           ) : (
             <Select value={clientId} onValueChange={onClientChange}>
               <SelectTrigger
-                className={clientIdError ? 'border-destructive' : ''}
+                className={`w-full max-w-48 ${clientIdError ? 'border-destructive' : ''}`}
               >
                 <SelectValue placeholder="Sélectionner un client…" />
               </SelectTrigger>
               <SelectContent>
-                {clients?.map((c) => (
-                  <SelectItem key={c.id} value={c.id}>
-                    {c.name}
-                  </SelectItem>
-                ))}
+                <SelectGroup>
+                  <SelectLabel>Clients</SelectLabel>
+                  {clients?.map((c) => (
+                    <SelectItem key={c.id} value={c.id}>
+                      {c.name}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
               </SelectContent>
             </Select>
           )}
