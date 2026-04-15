@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { z } from 'zod/v4';
 import { AuthSplitLayout } from '@/components/auth-split-layout';
+import { GithubSignInButton } from '@/components/github-sign-in-button';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -67,6 +68,17 @@ export default function RegisterPage() {
           <Text size="sm" variant="muted">
             Renseignez vos informations pour démarrer gratuitement.
           </Text>
+        </div>
+
+        {/* GitHub OAuth */}
+        <GithubSignInButton className="w-full" label="S'inscrire avec GitHub" />
+
+        <div className="flex items-center gap-3">
+          <div className="h-px flex-1 bg-border" />
+          <Text size="xs" variant="muted">
+            ou avec un e-mail
+          </Text>
+          <div className="h-px flex-1 bg-border" />
         </div>
 
         {/* Form */}
