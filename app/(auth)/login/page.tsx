@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { z } from 'zod/v4';
 import { AuthSplitLayout } from '@/components/auth-split-layout';
+import { GithubSignInButton } from '@/components/github-sign-in-button';
 import { SearchParamsProvider } from '@/components/search-params-provider';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -34,6 +35,7 @@ function LoginPageContent({ searchParams }: { searchParams: URLSearchParams }) {
   const router = useRouter();
   const { setUser } = useAuth();
   const from = searchParams.get('from') ?? '/dashboard';
+  const githubError = searchParams.get('error') === 'github';
 
   const mutation = useMutation({
     mutationFn: (values: z.infer<typeof loginSchema>) => auth.login(values),
@@ -74,6 +76,27 @@ function LoginPageContent({ searchParams }: { searchParams: URLSearchParams }) {
           <Text size="sm" variant="muted">
             Entrez vos identifiants pour accéder à votre espace.
           </Text>
+        </div>
+
+        {/* Erreur GitHub */}
+        {githubError && (
+          <div className="rounded-md border border-destructive/30 bg-destructive/5 px-3 py-2">
+            <Text size="xs" variant="destructive">
+              La connexion avec GitHub a échoué. Réessayez ou utilisez votre
+              e-mail.
+            </Text>
+          </div>
+        )}
+
+        {/* GitHub OAuth */}
+        <GithubSignInButton className="w-full" />
+
+        <div className="flex items-center gap-3">
+          <div className="h-px flex-1 bg-border" />
+          <Text size="xs" variant="muted">
+            ou
+          </Text>
+          <div className="h-px flex-1 bg-border" />
         </div>
 
         {/* Form */}

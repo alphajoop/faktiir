@@ -133,8 +133,13 @@ async function request<T>(
     throw new ApiError(0, 'Serveur inaccessible. Vérifiez votre connexion.');
   }
 
-  // Session expirée
-  if (res.status === 401 && path !== '/auth/me') {
+  // Session expirée (uniquement pour les routes protégées, pas pour login)
+  if (
+    res.status === 401 &&
+    path !== '/auth/me' &&
+    !path.includes('/auth/login') &&
+    !path.includes('/auth/github')
+  ) {
     if (typeof window !== 'undefined') {
       window.dispatchEvent(new CustomEvent(SESSION_EXPIRED_EVENT));
     }
