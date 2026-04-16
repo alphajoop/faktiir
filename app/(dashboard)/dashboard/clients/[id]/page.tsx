@@ -12,6 +12,7 @@ import {
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
 import { toast } from 'sonner';
+import { ConfirmDialog } from '@/components/confirm-dialog';
 import { EmptyState } from '@/components/empty-state';
 import { PageHeader } from '@/components/page-header';
 import { StatusBadge } from '@/components/status-badge';
@@ -32,12 +33,6 @@ export default function ClientDetailPage() {
     allInvoices?.data?.filter((inv) => inv.clientId === id) ?? [];
 
   const handleDelete = () => {
-    if (
-      !confirm(
-        `Supprimer "${client?.name}" ? Ses factures ne seront pas supprimées.`,
-      )
-    )
-      return;
     deleteClient.mutate(id, {
       onSuccess: () => {
         toast.success('Client supprimé');
@@ -67,15 +62,22 @@ export default function ClientDetailPage() {
                     Modifier
                   </Link>
                 </Button>
-                <Button
-                  variant="outline"
-                  size="icon-sm"
-                  onClick={handleDelete}
-                  disabled={deleteClient.isPending}
-                  title="Supprimer"
-                >
-                  <TrashIcon className="text-destructive" />
-                </Button>
+                <ConfirmDialog
+                  trigger={
+                    <Button
+                      variant="outline"
+                      size="icon-sm"
+                      disabled={deleteClient.isPending}
+                      title="Supprimer"
+                    >
+                      <TrashIcon className="text-destructive" />
+                    </Button>
+                  }
+                  title={`Supprimer "${client?.name}" ?`}
+                  description="Ce client sera définitivement supprimé. Ses factures associées ne seront pas supprimées."
+                  confirmLabel="Supprimer"
+                  onConfirm={handleDelete}
+                />
               </>
             )}
           </div>
