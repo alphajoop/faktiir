@@ -4,6 +4,10 @@ export interface User {
   name: string;
   companyName?: string | null;
   logoUrl?: string | null;
+  githubId?: string | null;
+  invoicePrefix: string;
+  invoiceNextNumber: number;
+  invoicePadding: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -43,6 +47,12 @@ export interface Invoice {
   items: InvoiceItem[];
   user?: User;
   createdAt: string;
+}
+
+export interface UpdateInvoiceNumberingBody {
+  invoicePrefix?: string;
+  invoiceNextNumber?: number;
+  invoicePadding?: number;
 }
 
 export interface AuthResponse {
@@ -264,6 +274,11 @@ export const users = {
   profile: () => request<User>('/users/profile'),
   update: (body: { name?: string; companyName?: string; logoUrl?: string }) =>
     request<User>('/users/profile', {
+      method: 'PATCH',
+      body: JSON.stringify(body),
+    }),
+  updateInvoiceNumbering: (body: UpdateInvoiceNumberingBody) =>
+    request<User>('/users/invoice-numbering', {
       method: 'PATCH',
       body: JSON.stringify(body),
     }),
