@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { toast } from 'sonner';
 import { z } from 'zod/v4';
+import { InvoiceNumberingSection } from '@/components/invoice-numbering-section';
 import { PageHeader } from '@/components/page-header';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -186,6 +187,9 @@ export default function SettingsPage() {
               </div>
             </form>
           </section>
+
+          {/* ── Numérotation des factures ── */}
+          {profile && <InvoiceNumberingSection user={profile} />}
 
           {/* Account */}
           <section className="rounded-xl border border-border bg-card p-5 flex flex-col gap-4">
