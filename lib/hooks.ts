@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
+  analytics,
   auth,
   type Client,
   type ClientsQuery,
@@ -18,6 +19,8 @@ export const qk = {
   client: (id: string) => ['clients', id] as const,
   invoices: (q?: InvoicesQuery) => ['invoices', q ?? {}] as const,
   invoice: (id: string) => ['invoices', id] as const,
+  analytics: (year?: number) =>
+    ['analytics', year ?? new Date().getFullYear()] as const,
   profile: ['profile'] as const,
 };
 
@@ -126,11 +129,13 @@ export function useDeleteInvoice() {
 }
 
 export function useProfile() {
-  const { isLoading: authLoading } = useAuth();
+  const { user, isLoading: authLoading } = useAuth();
   return useQuery({
     queryKey: qk.profile,
-    queryFn: () => users.profile(),
-    enabled: !authLoading,
+    queryFn: users.profile,
+    enabled: !authLoading && !!user,
+    retry: false,
+    retryDelay: 0,
   });
 }
 
@@ -169,5 +174,14 @@ export function useResetPassword() {
     onSuccess: (data) => {
       setUser(data.user);
     },
+  });
+}
+
+export function useAnalytics(year?: number) {
+  const { user, isLoading: authLoading } = useAuth();
+  return useQuery({
+    queryKey: ['analytics', year ?? new Date().getFullYear()] as const,
+    queryFn: () => analytics.get(year),
+    enabled: !authLoading && !!user,
   });
 }
