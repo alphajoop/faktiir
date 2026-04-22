@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  ChartNoAxesCombinedIcon,
   LayoutDashboardIcon,
   LogOutIcon,
   ReceiptIcon,
@@ -34,6 +35,11 @@ const navItems = [
   { label: 'Tableau de bord', href: '/dashboard', icon: LayoutDashboardIcon },
   { label: 'Factures', href: '/dashboard/invoices', icon: ReceiptIcon },
   { label: 'Clients', href: '/dashboard/clients', icon: UsersIcon },
+  {
+    label: 'Analytique',
+    href: '/dashboard/analytics',
+    icon: ChartNoAxesCombinedIcon,
+  },
 ];
 
 export function AppSidebar() {

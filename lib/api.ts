@@ -55,6 +55,37 @@ export interface UpdateInvoiceNumberingBody {
   invoicePadding?: number;
 }
 
+export interface MonthlyRevenue {
+  month: number;
+  label: string;
+  revenue: number;
+  count: number;
+}
+
+export interface TopClient {
+  id: string;
+  name: string;
+  email: string | null;
+  total: number;
+  invoiceCount: number;
+  paidCount: number;
+}
+
+export interface AnalyticsData {
+  year: number;
+  totalRevenue: number;
+  totalInvoices: number;
+  paidInvoices: number;
+  overdueInvoices: number;
+  pendingInvoices: number;
+  paymentRate: number;
+  avgInvoiceValue: number;
+  monthlyRevenue: MonthlyRevenue[];
+  topClients: TopClient[];
+  prevYearRevenue: number;
+  revenueGrowth: number | null;
+}
+
 export interface AuthResponse {
   user: User;
   access_token: string;
@@ -282,4 +313,9 @@ export const users = {
       method: 'PATCH',
       body: JSON.stringify(body),
     }),
+};
+
+export const analytics = {
+  get: (year?: number) =>
+    request<AnalyticsData>('/analytics', {}, year ? { year } : undefined),
 };

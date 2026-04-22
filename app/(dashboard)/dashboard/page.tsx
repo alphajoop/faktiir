@@ -10,60 +10,17 @@ import {
 import Link from 'next/link';
 import { ErrorState } from '@/components/error-state';
 import { PageHeader } from '@/components/page-header';
+import { StatCard } from '@/components/stat-card';
+import { StatCardSkeleton } from '@/components/stat-card-skeleton';
 import { StatusBadge } from '@/components/status-badge';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Caption, Text } from '@/components/ui/typography';
+import type { Invoice } from '@/lib/api';
 import { useAuth } from '@/lib/auth-context';
 import { classifyError } from '@/lib/error-utils';
 import { formatCurrency, formatDate } from '@/lib/format';
-import { useClients, useInvoices } from '@/lib/hooks';
-
-function StatCard({
-  label,
-  value,
-  icon: Icon,
-  sub,
-  loading,
-}: {
-  label: string;
-  value: string;
-  icon: React.ElementType;
-  sub?: string;
-  loading?: boolean;
-}) {
-  return (
-    <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4">
-      <div className="flex items-center justify-between">
-        <Caption>{label}</Caption>
-        <div className="flex size-7 items-center justify-center rounded-md bg-muted">
-          <Icon className="size-3.5 text-muted-foreground" />
-        </div>
-      </div>
-      {loading ? (
-        <Skeleton className="h-7 w-24" />
-      ) : (
-        <Text size="lg" weight="semibold" className="font-heading tabular-nums">
-          {value}
-        </Text>
-      )}
-      {sub && <Caption>{sub}</Caption>}
-    </div>
-  );
-}
-
-function StatCardSkeleton() {
-  return (
-    <div className="flex flex-col gap-3 rounded-xl border border-border bg-card p-4">
-      <div className="flex items-center justify-between">
-        <Skeleton className="h-3 w-24" />
-        <Skeleton className="size-7 rounded-md" />
-      </div>
-      <Skeleton className="h-7 w-24" />
-      <Skeleton className="h-3 w-16" />
-    </div>
-  );
-}
+import { useAnalytics, useClients, useInvoices } from '@/lib/hooks';
 
 function RecentInvoicesSkeleton() {
   let counter = 0;
@@ -85,6 +42,16 @@ function RecentInvoicesSkeleton() {
 
 export default function DashboardPage() {
   const { user } = useAuth();
+  const currentYear = new Date().getFullYear();
+
+  const {
+    data: analyticsData,
+    isLoading: loadingAnalytics,
+    isError: analyticsError,
+    error: analyticsErr,
+    refetch: refetchAnalytics,
+  } = useAnalytics(currentYear);
+
   const {
     data: invoicesData,
     isLoading: loadingInvoices,
@@ -104,26 +71,15 @@ export default function DashboardPage() {
   const invoiceList = invoicesData?.data ?? [];
   const clientList = clientsData?.data ?? [];
 
-  const paid = invoiceList.filter((i) => i.status === 'PAID');
-  const overdue = invoiceList.filter((i) => i.status === 'OVERDUE');
-  const pending = invoiceList.filter(
-    (i) => i.status === 'SENT' || i.status === 'DRAFT',
-  );
-  const totalRevenue = paid.reduce((s, i) => s + i.total, 0);
-
-  const recent = [...invoiceList]
-    .sort(
-      (a, b) =>
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-    )
-    .slice(0, 5);
-
   const hour = new Date().getHours();
   const greeting =
     hour < 12 ? 'Bonjour' : hour < 18 ? 'Bon après-midi' : 'Bonsoir';
 
   const invoicesClassified = invoicesError ? classifyError(invoicesErr) : null;
   const clientsClassified = clientsError ? classifyError(clientsErr) : null;
+  const analyticsClassified = analyticsError
+    ? classifyError(analyticsErr)
+    : null;
 
   return (
     <>
@@ -151,42 +107,43 @@ export default function DashboardPage() {
 
         {/* Stats */}
         <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-          {loadingInvoices || loadingClients ? (
+          {loadingInvoices || loadingClients || loadingAnalytics ? (
             <>
               <StatCardSkeleton />
               <StatCardSkeleton />
               <StatCardSkeleton />
               <StatCardSkeleton />
             </>
-          ) : invoicesClassified ? (
+          ) : analyticsClassified ? (
             <div className="col-span-2 md:col-span-4">
               <ErrorState
-                title={invoicesClassified.title}
-                description={invoicesClassified.description}
-                icon={invoicesClassified.icon}
+                title={analyticsClassified.title}
+                description={analyticsClassified.description}
+                icon={analyticsClassified.icon}
                 onRetry={() => {
+                  refetchAnalytics();
                   refetchInvoices();
                   refetchClients();
                 }}
               />
             </div>
-          ) : (
+          ) : analyticsData ? (
             <>
               <StatCard
                 label="Chiffre d'affaires"
-                value={formatCurrency(totalRevenue)}
+                value={formatCurrency(analyticsData.totalRevenue)}
                 icon={TrendingUpIcon}
-                sub={`${paid.length} facture${paid.length > 1 ? 's' : ''} payée${paid.length > 1 ? 's' : ''}`}
+                sub={`${analyticsData.paidInvoices} facture${analyticsData.paidInvoices > 1 ? 's' : ''} payée${analyticsData.paidInvoices > 1 ? 's' : ''}`}
               />
               <StatCard
                 label="En attente"
-                value={String(pending.length)}
+                value={String(analyticsData.pendingInvoices)}
                 icon={ClockIcon}
                 sub="factures à traiter"
               />
               <StatCard
                 label="En retard"
-                value={String(overdue.length)}
+                value={String(analyticsData.overdueInvoices)}
                 icon={FileTextIcon}
                 sub="à relancer"
               />
@@ -196,7 +153,7 @@ export default function DashboardPage() {
                 icon={UsersIcon}
               />
             </>
-          )}
+          ) : null}
         </div>
 
         {/* Recent invoices */}
@@ -220,7 +177,7 @@ export default function DashboardPage() {
                 icon={invoicesClassified.icon}
                 onRetry={refetchInvoices}
               />
-            ) : recent.length === 0 ? (
+            ) : invoiceList.length === 0 ? (
               <div className="flex flex-col items-center gap-2 py-12 text-center">
                 <FileTextIcon className="size-8 text-muted-foreground/40" />
                 <Text size="sm" variant="muted">
@@ -235,30 +192,37 @@ export default function DashboardPage() {
               </div>
             ) : (
               <div className="divide-y divide-border">
-                {recent.map((inv) => (
-                  <Link
-                    key={inv.id}
-                    href={`/dashboard/invoices/${inv.id}`}
-                    className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-muted/40"
-                  >
-                    <div className="min-w-0 flex-1">
-                      <Text size="sm" weight="medium" className="truncate">
-                        {inv.number}
-                      </Text>
-                      <Caption className="block truncate">
-                        {inv.client.name} · {formatDate(inv.issueDate)}
-                      </Caption>
-                    </div>
-                    <Text
-                      size="sm"
-                      weight="medium"
-                      className="tabular-nums shrink-0"
+                {invoiceList
+                  .sort(
+                    (a: Invoice, b: Invoice) =>
+                      new Date(b.createdAt).getTime() -
+                      new Date(a.createdAt).getTime(),
+                  )
+                  .slice(0, 5)
+                  .map((inv) => (
+                    <Link
+                      key={inv.id}
+                      href={`/dashboard/invoices/${inv.id}`}
+                      className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-muted/40"
                     >
-                      {formatCurrency(inv.total)}
-                    </Text>
-                    <StatusBadge status={inv.status} />
-                  </Link>
-                ))}
+                      <div className="min-w-0 flex-1">
+                        <Text size="sm" weight="medium" className="truncate">
+                          {inv.number}
+                        </Text>
+                        <Caption className="block truncate">
+                          {inv.client.name} · {formatDate(inv.issueDate)}
+                        </Caption>
+                      </div>
+                      <Text
+                        size="sm"
+                        weight="medium"
+                        className="tabular-nums shrink-0"
+                      >
+                        {formatCurrency(inv.total)}
+                      </Text>
+                      <StatusBadge status={inv.status} />
+                    </Link>
+                  ))}
               </div>
             )}
           </div>
