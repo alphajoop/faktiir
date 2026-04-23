@@ -19,8 +19,13 @@ jobs:
       - name: Install deps
         run: bun install
 
+      - name: Setup Biome
+        uses: biomejs/setup-biome@v2
+        with:
+          version: latest
+
       - name: Lint & Format
-        run: bunx biome ci .
+        run: biome ci .
 
       - name: Generate Prisma
         run: bun run prisma:generate
