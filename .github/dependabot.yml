@@ -1,15 +1,42 @@
 version: 2
 updates:
-  - package-ecosystem: 'npm'
-    directory: '/'
+  # Root dependencies (Turbo, Biome, etc.)
+  - package-ecosystem: "bun"
+    directory: "/"
     schedule:
-      interval: 'weekly'
-      day: 'sunday'
-      time: '04:00'
+      interval: "weekly"
+      day: "sunday"
+      time: "04:00"
     open-pull-requests-limit: 10
-    rebase-strategy: 'auto'
-    versioning-strategy: 'increase'
+    rebase-strategy: "auto"
+    versioning-strategy: "increase"
     allow:
-      - dependency-type: 'all'
+      - dependency-type: "all"
     ignore:
-      - dependency-name: 'pnpm'
+      - dependency-name: "pnpm"
+
+  # API dependencies (NestJS, Prisma, etc.)
+  - package-ecosystem: "bun"
+    directory: "/apps/api"
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+      time: "04:00"
+    open-pull-requests-limit: 10
+    rebase-strategy: "auto"
+    versioning-strategy: "increase"
+    allow:
+      - dependency-type: "all"
+
+  # Web dependencies (Next.js, React, etc.)
+  - package-ecosystem: "bun"
+    directory: "/apps/web"
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+      time: "04:00"
+    open-pull-requests-limit: 10
+    rebase-strategy: "auto"
+    versioning-strategy: "increase"
+    allow:
+      - dependency-type: "all"

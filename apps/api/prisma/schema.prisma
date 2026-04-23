@@ -1,0 +1,85 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  email       String   @unique
+  password    String
+  name        String
+  companyName String?
+  invoicePrefix    String   @default("FAK")   // ex: "FAK", "FACT", "INV", "SARL"
+  invoiceNextNumber Int     @default(1)        // prochain numéro à utiliser
+  invoicePadding   Int      @default(4)        // nombre de zéros : 4 → 0001
+  logoUrl     String?
+  githubId    String?  @unique
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  clients            Client[]
+  invoices           Invoice[]
+  passwordResetTokens PasswordResetToken[]
+}
+
+model PasswordResetToken {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  token     String   @unique
+  userId    String   @db.ObjectId
+  user      User     @relation(fields: [userId], references: [id])
+  expiresAt DateTime
+  used      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model Client {
+  id      String  @id @default(auto()) @map("_id") @db.ObjectId
+  name    String
+  email   String?
+  address String?
+  phone   String?
+  userId  String  @db.ObjectId
+  user    User    @relation(fields: [userId], references: [id])
+
+  invoices Invoice[]
+}
+
+model Invoice {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  number    String
+  status    String   @default("DRAFT")
+  issueDate DateTime
+  dueDate   DateTime
+  total     Float
+  tax       Float
+  notes     String?
+  userId    String   @db.ObjectId
+  clientId  String   @db.ObjectId
+
+  user   User   @relation(fields: [userId], references: [id])
+  client Client @relation(fields: [clientId], references: [id])
+
+  items InvoiceItem[]
+
+  createdAt DateTime @default(now())
+}
+
+model InvoiceItem {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  description String
+  quantity    Int
+  unitPrice   Float
+  total       Float
+  invoiceId   String  @db.ObjectId
+  invoice     Invoice @relation(fields: [invoiceId], references: [id])
+}

@@ -1,0 +1,18 @@
+{
+  "extends": "//",
+  "linter": {
+    "rules": {
+      "style": {
+        "useImportType": "off"
+      }
+    }
+  },
+  "javascript": {
+    "parser": {
+      "unsafeParameterDecoratorsEnabled": true
+    },
+    "formatter": {
+      "quoteStyle": "double"
+    }
+  }
+}
