@@ -1,6 +1,17 @@
 {
   "$schema": "https://turborepo.dev/schema.json",
   "ui": "tui",
+  "globalEnv": [
+    "DATABASE_URL",
+    "JWT_SECRET",
+    "JWT_EXPIRES_IN",
+    "PORT",
+    "RESEND_API_KEY",
+    "RESEND_FROM",
+    "FRONTEND_URL",
+    "NODE_ENV",
+    "COOKIE_DOMAIN"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["prisma:generate", "^build"],
