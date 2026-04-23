@@ -28,7 +28,7 @@
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.1.18",
     "@nestjs/swagger": "^11.2.6",
-    "@prisma/client": "^6.19.0",
+    "@prisma/client": "^7.8.0",
     "@sparticuz/chromium": "^147.0.0",
     "bcrypt": "^6.0.0",
     "class-transformer": "^0.5.1",
