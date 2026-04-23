@@ -20,7 +20,7 @@ jobs:
         run: bun install
 
       - name: Lint & Format
-        run: biome ci .
+        run: bunx biome ci .
 
       - name: Generate Prisma
         run: bun run prisma:generate
