@@ -1,4 +1,5 @@
 import {
+  ChartNoAxesCombinedIcon,
   LayoutDashboardIcon,
   PanelLeftIcon,
   PlusIcon,
@@ -54,6 +55,7 @@ const NAV = [
   { icon: LayoutDashboardIcon, label: 'Tableau de bord', active: false },
   { icon: ReceiptIcon, label: 'Factures', active: true },
   { icon: UsersIcon, label: 'Clients', active: false },
+  { icon: ChartNoAxesCombinedIcon, label: 'Analytique', active: false },
 ];
 
 export function AppPreview() {
@@ -75,7 +77,7 @@ export function AppPreview() {
             <div className="size-2.5 rounded-full bg-green-400/80" />
           </div>
           {/* URL bar */}
-          <div className="ml-2 flex flex-1 items-center gap-1.5 rounded-md bg-background/80 border border-border/60 px-2.5 py-1 max-w-[200px]">
+          <div className="ml-2 flex flex-1 items-center gap-1.5 rounded-md bg-background/80 border border-border/60 px-2.5 py-1 max-w-50">
             <div className="size-2 rounded-full bg-green-500/70 shrink-0" />
             <span className="text-[10px] text-muted-foreground/70 font-mono truncate">
               faktiir.com/dashboard
@@ -84,9 +86,9 @@ export function AppPreview() {
         </div>
 
         {/* Dashboard layout - exact replica */}
-        <div className="flex h-[340px] sm:h-[380px] bg-background">
+        <div className="flex h-85 sm:h-95 bg-background">
           {/* Sidebar */}
-          <div className="hidden w-[168px] shrink-0 border-r border-sidebar-border bg-sidebar sm:flex flex-col">
+          <div className="hidden w-42 shrink-0 border-r border-sidebar-border bg-sidebar sm:flex flex-col">
             {/* Sidebar header */}
             <div className="flex items-center gap-2 p-3 border-b border-sidebar-border/50">
               <div className="flex size-6 items-center justify-center rounded-md bg-sidebar-primary">

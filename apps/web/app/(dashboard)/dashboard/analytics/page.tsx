@@ -228,10 +228,7 @@ function AnalyticsContent({ data }: { data: AnalyticsData }) {
           )}
         </div>
 
-        <ChartContainer
-          config={revenueChartConfig}
-          className="h-[220px] w-full"
-        >
+        <ChartContainer config={revenueChartConfig} className="h-55 w-full">
           <AreaChart
             accessibilityLayer
             data={data.monthlyRevenue}
@@ -308,10 +305,7 @@ function AnalyticsContent({ data }: { data: AnalyticsData }) {
             <Caption>Nombre de factures encaissées</Caption>
           </div>
 
-          <ChartContainer
-            config={invoiceChartConfig}
-            className="h-[180px] w-full"
-          >
+          <ChartContainer config={invoiceChartConfig} className="h-45 w-full">
             <BarChart
               accessibilityLayer
               data={data.monthlyRevenue}
