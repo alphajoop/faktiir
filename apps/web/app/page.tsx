@@ -84,7 +84,7 @@ export default function Home() {
       <section className="relative overflow-hidden px-4 pb-24 pt-20 md:pb-32 md:pt-24">
         <div
           aria-hidden
-          className="pointer-events-none absolute left-1/2 top-0 -z-10 h-[500px] w-[800px] -translate-x-1/2 rounded-full bg-primary/8 blur-3xl"
+          className="pointer-events-none absolute left-1/2 top-0 -z-10 h-125 w-200 -translate-x-1/2 rounded-full bg-primary/8 blur-3xl"
         />
         <div
           aria-hidden
