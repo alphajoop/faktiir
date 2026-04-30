@@ -1,0 +1,12 @@
+{
+  "editor.formatOnSave": true,
+
+  "editor.codeActionsOnSave": {
+    "source.fixAll.biome": "explicit",
+    "source.organizeImports.biome": "explicit"
+  },
+
+  "editor.defaultFormatter": "biomejs.biome",
+
+  "prisma.pinToPrisma6": true
+}
