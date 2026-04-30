@@ -1,12 +1,12 @@
 import {
   ArrowRightIcon,
+  BellIcon,
   CheckIcon,
   DownloadIcon,
   FileTextIcon,
   LayoutDashboardIcon,
   ShieldCheckIcon,
   UsersIcon,
-  ZapIcon,
 } from 'lucide-react';
 import Link from 'next/link';
 import FaktiirIcon from '@/components/icons/faktiir-icon';
@@ -20,13 +20,20 @@ function FeatureCard({
   icon: Icon,
   title,
   description,
+  badge,
 }: {
   icon: React.ElementType;
   title: string;
   description: string;
+  badge?: string;
 }) {
   return (
-    <div className="group rounded-xl border border-border bg-card p-6 transition-shadow hover:shadow-md">
+    <div className="group relative h-full rounded-xl border border-border bg-card p-6 transition-shadow hover:shadow-md">
+      {badge && (
+        <span className="absolute right-4 top-4 rounded-full border border-primary/20 bg-primary/8 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-primary">
+          {badge}
+        </span>
+      )}
       <div className="mb-4 flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
         <Icon className="size-5" />
       </div>
@@ -194,10 +201,11 @@ export default function Home() {
                   "Centralisez vos contacts : nom, e-mail, téléphone, adresse. Retrouvez l'historique de chaque client en un coup d'œil.",
               },
               {
-                icon: ZapIcon,
-                title: 'Statuts automatiques',
+                icon: BellIcon,
+                title: 'Rappels automatiques',
                 description:
-                  "Suivez l'état de chaque facture — brouillon, envoyée, payée, en retard. Passez d'un statut à l'autre en un clic.",
+                  'Faktiir détecte chaque jour les factures en retard et envoie automatiquement un e-mail de relance à vos clients. Zéro oubli, zéro friction.',
+                badge: 'Nouveau',
               },
               {
                 icon: LayoutDashboardIcon,
@@ -212,7 +220,7 @@ export default function Home() {
                   'Open source et auto-hébergeable. Exportez tout à tout moment. Aucun verrouillage propriétaire.',
               },
             ].map((feature, i) => (
-              <Reveal key={feature.title} delay={i * 60}>
+              <Reveal key={feature.title} delay={i * 60} className="h-full">
                 <FeatureCard {...feature} />
               </Reveal>
             ))}
@@ -255,9 +263,9 @@ export default function Home() {
                 },
                 {
                   number: '03',
-                  title: 'Émettez votre première facture',
+                  title: 'Émettez et oubliez',
                   description:
-                    'Sélectionnez un client, ajoutez vos prestations, définissez la TVA. Téléchargez le PDF et envoyez.',
+                    'Créez votre facture, téléchargez le PDF et envoyez. Faktiir se charge des relances automatiques si le client tarde à payer.',
                 },
               ].map((step, i) => (
                 <Reveal key={step.number} delay={i * 100}>
