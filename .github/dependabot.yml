@@ -1,42 +1,97 @@
 version: 2
+
 updates:
-  # Root dependencies (Turbo, Biome, etc.)
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+      time: "04:00"
+      timezone: "Africa/Dakar"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "ci"
+
+  # Root (turbo, biome, typescript)
   - package-ecosystem: "bun"
     directory: "/"
     schedule:
       interval: "weekly"
       day: "sunday"
       time: "04:00"
-    open-pull-requests-limit: 10
-    rebase-strategy: "auto"
-    versioning-strategy: "increase"
-    allow:
-      - dependency-type: "all"
-    ignore:
-      - dependency-name: "pnpm"
+      timezone: "Africa/Dakar"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+    groups:
+      tooling:
+        patterns:
+          - "turbo"
+          - "@biomejs/*"
+          - "typescript"
 
-  # API dependencies (NestJS, Prisma, etc.)
+  # API (NestJS, Prisma, Puppeteer…)
   - package-ecosystem: "bun"
     directory: "/apps/api"
     schedule:
       interval: "weekly"
       day: "sunday"
       time: "04:00"
+      timezone: "Africa/Dakar"
     open-pull-requests-limit: 10
-    rebase-strategy: "auto"
-    versioning-strategy: "increase"
-    allow:
-      - dependency-type: "all"
+    labels:
+      - "dependencies"
+      - "api"
+    groups:
+      nestjs:
+        patterns:
+          - "@nestjs/*"
+      prisma:
+        patterns:
+          - "prisma"
+          - "@prisma/*"
+      puppeteer:
+        patterns:
+          - "puppeteer"
+          - "puppeteer-core"
+          - "@sparticuz/*"
 
-  # Web dependencies (Next.js, React, etc.)
+  # Web (Next.js, React, shadcn, Radix…)
   - package-ecosystem: "bun"
     directory: "/apps/web"
     schedule:
       interval: "weekly"
       day: "sunday"
       time: "04:00"
+      timezone: "Africa/Dakar"
     open-pull-requests-limit: 10
-    rebase-strategy: "auto"
-    versioning-strategy: "increase"
-    allow:
-      - dependency-type: "all"
+    labels:
+      - "dependencies"
+      - "web"
+    groups:
+      react:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
+      nextjs:
+        patterns:
+          - "next"
+          - "next-themes"
+      tanstack:
+        patterns:
+          - "@tanstack/*"
+      radix:
+        patterns:
+          - "radix-ui"
+          - "@radix-ui/*"
+      tailwind:
+        patterns:
+          - "tailwindcss"
+          - "@tailwindcss/*"
+          - "tw-animate-css"
+          - "tailwind-merge"
+          - "class-variance-authority"
