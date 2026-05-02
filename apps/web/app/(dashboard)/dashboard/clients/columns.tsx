@@ -25,12 +25,13 @@ function DeleteCell({ client }: { client: Client }) {
       title={`Supprimer "${client.name}" ?`}
       description="Ce client sera définitivement supprimé. Ses factures associées ne seront pas supprimées."
       confirmLabel="Supprimer"
-      onConfirm={() =>
-        deleteMutation.mutate(client.id, {
-          onSuccess: () => toast.success('Client supprimé'),
-          onError: (e) => toast.error(e.message),
-        })
-      }
+      onConfirm={async () => {
+        await deleteMutation.mutateAsync(client.id).catch((e: Error) => {
+          toast.error(e.message);
+          throw e; // re-throw → dialog reste ouvert
+        });
+        toast.success('Client supprimé');
+      }}
     />
   );
 }

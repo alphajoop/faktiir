@@ -32,14 +32,13 @@ export default function ClientDetailPage() {
   const clientInvoices =
     allInvoices?.data?.filter((inv) => inv.clientId === id) ?? [];
 
-  const handleDelete = () => {
-    deleteClient.mutate(id, {
-      onSuccess: () => {
-        toast.success('Client supprimé');
-        router.push('/dashboard/clients');
-      },
-      onError: (e) => toast.error(e.message),
+  const handleDelete = async () => {
+    await deleteClient.mutateAsync(id).catch((e: Error) => {
+      toast.error(e.message);
+      throw e;
     });
+    toast.success('Client supprimé');
+    router.push('/dashboard/clients');
   };
 
   return (
