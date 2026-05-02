@@ -48,14 +48,13 @@ export default function InvoiceDetailPage() {
     );
   };
 
-  const handleDelete = () => {
-    deleteInvoice.mutate(id, {
-      onSuccess: () => {
-        toast.success('Facture supprimée');
-        router.push('/dashboard/invoices');
-      },
-      onError: (e) => toast.error(e.message),
+  const handleDelete = async () => {
+    await deleteInvoice.mutateAsync(id).catch((e: Error) => {
+      toast.error(e.message);
+      throw e;
     });
+    toast.success('Facture supprimée');
+    router.push('/dashboard/invoices');
   };
 
   return (

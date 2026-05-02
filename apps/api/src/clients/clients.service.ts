@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -78,6 +79,14 @@ export class ClientsService {
 
   async remove(id: string, userId: string) {
     await this.findOne(id, userId);
+    const invoiceCount = await this.prisma.invoice.count({
+      where: { clientId: id },
+    });
+    if (invoiceCount > 0) {
+      throw new BadRequestException(
+        `Impossible de supprimer ce client : ${invoiceCount} facture${invoiceCount > 1 ? "s" : ""} y sont associées.`,
+      );
+    }
     return this.prisma.client.delete({ where: { id } });
   }
 }

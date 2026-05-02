@@ -50,12 +50,13 @@ function DeleteCell({ invoice }: { invoice: Invoice }) {
       title="Supprimer cette facture ?"
       description="Cette action est irréversible."
       confirmLabel="Supprimer"
-      onConfirm={() =>
-        deleteMutation.mutate(invoice.id, {
-          onSuccess: () => toast.success('Facture supprimée'),
-          onError: (e) => toast.error(e.message),
-        })
-      }
+      onConfirm={async () => {
+        await deleteMutation.mutateAsync(invoice.id).catch((e: Error) => {
+          toast.error(e.message);
+          throw e; // re-throw → dialog reste ouvert
+        });
+        toast.success('Facture supprimée');
+      }}
     />
   );
 }
