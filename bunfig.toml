@@ -1,0 +1,4 @@
+[install]
+minimumReleaseAge = 86400
+frozenLockfile = true
+linkWorkspacePackages = true
