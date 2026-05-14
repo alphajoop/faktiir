@@ -27,6 +27,11 @@ import {
   SidebarSeparator,
   useSidebar,
 } from '@/components/ui/sidebar';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { Text } from '@/components/ui/typography';
 import { useAuth } from '@/lib/auth-context';
 import { getInitials } from '@/lib/user-utils';
@@ -128,7 +133,7 @@ export function AppSidebar() {
         </SidebarMenu>
 
         {user && (
-          <div className="flex items-center gap-2 px-2 py-1 group-data-[collapsible=icon]:justify-center">
+          <div className="flex items-center gap-2 px-2 py-1 group-data-[collapsible=icon]:flex-col group-data-[collapsible=icon]:gap-1">
             <Avatar size="sm">
               <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
             </Avatar>
@@ -140,16 +145,16 @@ export function AppSidebar() {
                 {user.email}
               </Text>
             </div>
-            <div className="flex shrink-0 items-center gap-0.5 group-data-[collapsible=icon]:hidden">
+            <div className="flex shrink-0 items-center gap-0.5 group-data-[collapsible=icon]:flex-col group-data-[collapsible=icon]:gap-1">
               <ModeToggle />
-              <Button
-                variant="ghost"
-                size="icon-xs"
-                onClick={handleLogout}
-                title="Se déconnecter"
-              >
-                <LogOutIcon />
-              </Button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button variant="ghost" size="icon-sm" onClick={handleLogout}>
+                    <LogOutIcon />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent side="right">Se déconnecter</TooltipContent>
+              </Tooltip>
             </div>
           </div>
         )}
