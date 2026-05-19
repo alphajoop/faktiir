@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import FaktiirIcon from '@/components/icons/faktiir-icon';
 import { ModeToggle } from '@/components/mode-toggle';
+import FaktiirLogo from './icons/faktiir-logo';
 
 interface AuthSplitLayoutProps {
   children: React.ReactNode;
@@ -24,16 +24,8 @@ export function AuthSplitLayout({
       <div className="relative flex w-full flex-col lg:w-[48%] xl:w-[44%]">
         {/* Top bar */}
         <div className="flex items-center justify-between px-6 py-5 md:px-8">
-          <Link
-            href="/"
-            className="flex items-center gap-2.5 text-foreground transition-opacity hover:opacity-70"
-          >
-            <div className="flex size-7 items-center justify-center rounded-md bg-primary">
-              <FaktiirIcon className="size-4 text-primary-foreground" />
-            </div>
-            <span className="font-heading text-sm font-semibold tracking-tight">
-              FAKTIIR
-            </span>
+          <Link href="/" className="transition-opacity hover:opacity-80">
+            <FaktiirLogo className="h-5 w-auto text-primary" />
           </Link>
           <ModeToggle />
         </div>
