@@ -9,7 +9,7 @@ import {
   UsersIcon,
 } from 'lucide-react';
 import Link from 'next/link';
-import FaktiirIcon from '@/components/icons/faktiir-icon';
+import FaktiirLogo from '@/components/icons/faktiir-logo';
 import { GithubIcon } from '@/components/icons/github-icon';
 import { AppPreview } from '@/components/landing/app-preview';
 import { Navbar } from '@/components/landing/navbar';
@@ -127,6 +127,7 @@ export default function Home() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
+                <GithubIcon className="mr-1" />
                 Voir sur GitHub
               </a>
             </Button>
@@ -281,45 +282,62 @@ export default function Home() {
       <section className="px-4 py-16">
         <div className="mx-auto max-w-5xl">
           <Reveal>
-            <div className="relative overflow-hidden rounded-2xl border border-primary/20 bg-primary/5 px-8 py-10 text-center">
+            <div className="relative overflow-hidden rounded-2xl border border-border bg-muted/40 px-12 py-12">
+              {/* Logo filigrane pleine largeur */}
               <div
                 aria-hidden
-                className="absolute right-8 top-1/2 -translate-y-1/2 opacity-5"
+                className="pointer-events-none absolute bottom-8 right-6 w-[70%] opacity-[0.045] translate-y-4"
               >
-                <FaktiirIcon className="size-40 text-primary" />
+                <FaktiirLogo className="w-full h-auto text-foreground" />
               </div>
-              <p className="mb-2 text-xs font-medium uppercase tracking-widest text-primary">
-                Open Source
-              </p>
-              <h2 className="font-heading text-2xl font-semibold text-foreground md:text-3xl">
-                Transparent par nature.
-              </h2>
-              <p className="mx-auto mt-3 max-w-md text-sm text-muted-foreground">
-                Le code source est public. Inspectez, contribuez ou
-                auto-hébergez Faktiir sur votre propre infrastructure.
-              </p>
-              <div className="mt-6 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-                <Button variant="ghost" asChild className="gap-2">
-                  <a
-                    href="https://github.com/alphajoop/faktiir"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <GithubIcon className="size-4" />
-                    GitHub
-                  </a>
-                </Button>
-                <div className="flex flex-wrap items-center justify-center gap-3 text-xs text-muted-foreground">
-                  {[
-                    'MIT License',
-                    'Contributions bienvenues',
-                    'Auto-hébergeable',
-                  ].map((item) => (
-                    <span key={item} className="flex items-center gap-1">
-                      <CheckIcon className="size-3 text-primary" />
-                      {item}
-                    </span>
-                  ))}
+
+              <div className="relative z-10 max-w-md">
+                {/* Badge */}
+                <span className="mb-5 inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-primary">
+                  <span className="size-1.5 rounded-full bg-primary" />
+                  Open source
+                </span>
+
+                <h2 className="font-heading text-3xl font-semibold leading-tight text-foreground md:text-4xl">
+                  Transparent
+                  <br />
+                  par nature.
+                </h2>
+
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                  Le code source est entièrement public. Inspectez, contribuez
+                  ou auto-hébergez Faktiir sur votre propre infrastructure.
+                </p>
+
+                <div className="mt-8 flex items-center gap-6">
+                  <Button variant="outline" asChild className="gap-2">
+                    <a
+                      href="https://github.com/alphajoop/faktiir"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <GithubIcon className="size-4" />
+                      Voir sur GitHub
+                    </a>
+                  </Button>
+
+                  <div className="h-14 w-px bg-border" aria-hidden />
+
+                  <div className="flex flex-col gap-2">
+                    {[
+                      'MIT License',
+                      'Contributions bienvenues',
+                      'Auto-hébergeable',
+                    ].map((item) => (
+                      <span
+                        key={item}
+                        className="flex items-center gap-2 text-xs text-muted-foreground"
+                      >
+                        <CheckIcon className="size-3 text-primary" />
+                        {item}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -353,9 +371,9 @@ export default function Home() {
               </Button>
               <Button
                 size="lg"
-                variant="ghost"
+                variant="outline"
                 asChild
-                className="h-11 px-6 text-base text-background/80 hover:bg-background/10 hover:text-background dark:text-muted-foreground dark:hover:text-foreground dark:hover:bg-muted"
+                className="h-11 px-6 text-base bg-transparent text-background dark:text-foreground dark:hover:text-background dark:hover:bg-primary"
               >
                 <Link href="/login">Se connecter</Link>
               </Button>
@@ -367,14 +385,9 @@ export default function Home() {
       {/* ── Footer ── */}
       <footer className="border-t border-border px-4 py-8">
         <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-4 text-xs text-muted-foreground sm:flex-row">
-          <div className="flex items-center gap-2">
-            <div className="flex size-5 items-center justify-center rounded bg-primary">
-              <FaktiirIcon className="size-3 text-primary-foreground" />
-            </div>
-            <span className="font-heading font-semibold text-foreground">
-              FAKTIIR
-            </span>
-            <span>·</span>
+          <div className="flex items-center gap-3">
+            <FaktiirLogo className="h-5 w-auto text-primary" />
+            <span className="text-muted-foreground/40">·</span>
             <span>Logiciel de facturation open source</span>
           </div>
           <div className="flex items-center gap-4">

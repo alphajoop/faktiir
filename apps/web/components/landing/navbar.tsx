@@ -1,25 +1,17 @@
 'use client';
 
 import Link from 'next/link';
-import FaktiirIcon from '@/components/icons/faktiir-icon';
 import { ModeToggle } from '@/components/mode-toggle';
 import { Button } from '@/components/ui/button';
+import FaktiirLogo from '../icons/faktiir-logo';
 
 export function Navbar() {
   return (
     <header className="sticky top-0 z-50 border-b border-transparent bg-background/80 backdrop-blur-md">
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between px-4 md:px-6">
         {/* Logo */}
-        <Link
-          href="/"
-          className="flex items-center gap-2.5 text-foreground transition-opacity hover:opacity-70"
-        >
-          <div className="flex size-7 items-center justify-center rounded-md bg-primary">
-            <FaktiirIcon className="size-4 text-primary-foreground" />
-          </div>
-          <span className="font-heading text-sm font-semibold tracking-tight">
-            FAKTIIR
-          </span>
+        <Link href="/" className="transition-opacity hover:opacity-80">
+          <FaktiirLogo className="h-5 w-auto text-primary" />
         </Link>
 
         {/* Right actions */}
