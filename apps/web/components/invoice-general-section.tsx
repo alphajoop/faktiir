@@ -36,6 +36,12 @@ export function InvoiceGeneralSection({
   onIssueDateChange,
   onDueDateChange,
 }: InvoiceGeneralSectionProps) {
+  // Radix Select ne met pas à jour l'affichage si la valeur est définie
+  // avant que l'option correspondante soit rendue — on remonte le composant
+  // une fois le client présent dans la liste.
+  const clientInList =
+    !clientId || clients?.some((c) => c.id === clientId) === true;
+
   return (
     <section className="rounded-xl border border-border bg-card p-5 flex flex-col gap-5">
       <Text size="sm" weight="semibold">
@@ -59,7 +65,11 @@ export function InvoiceGeneralSection({
               </Text>
             </div>
           ) : (
-            <Select value={clientId} onValueChange={onClientChange}>
+            <Select
+              key={clientInList ? clientId || 'empty' : 'pending'}
+              value={clientInList && clientId ? clientId : undefined}
+              onValueChange={onClientChange}
+            >
               <SelectTrigger
                 className={`w-full max-w-48 ${clientIdError ? 'border-destructive' : ''}`}
               >
