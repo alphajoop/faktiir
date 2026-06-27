@@ -4,7 +4,7 @@ import { useForm } from '@tanstack/react-form';
 import { ArrowLeftIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 import { InvoiceGeneralSection } from '@/components/invoice-general-section';
 import { InvoiceItemsEditor } from '@/components/invoice-items-editor';
@@ -20,8 +20,15 @@ export default function EditInvoicePage() {
   const { id } = useParams<{ id: string }>();
   const router = useRouter();
   const { data: invoice, isLoading } = useInvoice(id);
-  const { data: clientsData } = useClients();
-  const clientList = clientsData?.data ?? [];
+  const { data: clientsData, isLoading: clientsLoading } = useClients({
+    limit: 100,
+  });
+  const clientList = useMemo(() => {
+    const list = clientsData?.data ?? [];
+    if (!invoice?.client) return list;
+    if (list.some((c) => c.id === invoice.clientId)) return list;
+    return [invoice.client, ...list];
+  }, [clientsData?.data, invoice?.client, invoice?.clientId]);
   const updateInvoice = useUpdateInvoice();
 
   const [items, setItems] = useState<InvoiceLineItem[]>([emptyItem()]);
@@ -69,7 +76,7 @@ export default function EditInvoicePage() {
         unitPrice: i.unitPrice,
       })),
     );
-  }, [invoice, form]);
+  }, [invoice, form.setFieldValue]);
 
   return (
     <>
@@ -86,7 +93,7 @@ export default function EditInvoicePage() {
       />
 
       <div className="flex flex-1 flex-col p-4 md:p-6">
-        {isLoading ? (
+        {isLoading || clientsLoading ? (
           <EditSkeleton />
         ) : (
           <form
