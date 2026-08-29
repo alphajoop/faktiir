@@ -25,34 +25,6 @@ const STEPS = [
   },
 ] as const;
 
-function Step({
-  number,
-  title,
-  description,
-}: {
-  number: string;
-  title: string;
-  description: string;
-}) {
-  return (
-    <div className="flex gap-5">
-      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-primary/30 bg-primary/10">
-        <span className="font-heading text-sm font-semibold text-primary tabular-nums">
-          {number}
-        </span>
-      </div>
-      <div className="pt-1">
-        <h3 className="mb-1 font-heading text-base font-semibold text-foreground">
-          {title}
-        </h3>
-        <p className="text-sm leading-relaxed text-muted-foreground">
-          {description}
-        </p>
-      </div>
-    </div>
-  );
-}
-
 export function HowItWorksSection() {
   return (
     <LandingSection variant="muted">
@@ -73,13 +45,42 @@ export function HowItWorksSection() {
           />
         </Reveal>
 
-        <div className="flex flex-col gap-8">
-          {STEPS.map((step, i) => (
-            <Reveal key={step.number} delay={i * 100}>
-              <Step {...step} />
-            </Reveal>
-          ))}
-        </div>
+        <Reveal className="how-it-works-steps pl-2">
+          <div className="grid grid-cols-[36px_1fr] gap-x-5">
+            {STEPS.map((step, i) => (
+              <Reveal
+                key={step.number}
+                delay={i * 80}
+                className={`col-span-2 grid grid-cols-[36px_1fr] gap-x-5${
+                  i < STEPS.length - 1 ? ' pb-8' : ''
+                }`}
+              >
+                <div className="relative z-10">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-primary/30 bg-background">
+                    <span className="font-heading text-sm font-semibold text-primary tabular-nums">
+                      {step.number}
+                    </span>
+                  </div>
+                  {i < STEPS.length - 1 && (
+                    <div
+                      className="how-it-works-connector-line absolute top-9 left-1/2 h-8 w-px -translate-x-1/2"
+                      style={{ transitionDelay: `${i * 80 + 120}ms` }}
+                      aria-hidden
+                    />
+                  )}
+                </div>
+                <div className="pt-1">
+                  <h3 className="mb-1 font-heading text-base font-semibold text-foreground">
+                    {step.title}
+                  </h3>
+                  <p className="text-sm leading-relaxed text-muted-foreground">
+                    {step.description}
+                  </p>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </Reveal>
       </div>
     </LandingSection>
   );

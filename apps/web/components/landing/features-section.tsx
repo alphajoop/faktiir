@@ -64,13 +64,13 @@ function FeatureCard({
   badge?: string;
 }) {
   return (
-    <div className="group relative h-full rounded-xl border border-border bg-card p-6 transition-shadow hover:shadow-md">
+    <div className="feature-card group relative h-full rounded-xl border border-border bg-card p-6">
       {badge && (
         <span className="absolute top-4 right-4 rounded-full border border-primary/20 bg-primary/8 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-primary">
           {badge}
         </span>
       )}
-      <div className="mb-4 flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+      <div className="feature-card-icon mb-4 flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground">
         <Icon className="size-5" />
       </div>
       <h3 className="mb-2 font-heading text-base font-semibold text-foreground">

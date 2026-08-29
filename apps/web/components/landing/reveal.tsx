@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { cn } from '@/lib/utils';
 
 interface RevealProps {
   children: React.ReactNode;
@@ -10,6 +11,7 @@ interface RevealProps {
 
 export function Reveal({ children, className, delay = 0 }: RevealProps) {
   const ref = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     const el = ref.current;
@@ -20,20 +22,14 @@ export function Reveal({ children, className, delay = 0 }: RevealProps) {
     ).matches;
 
     if (prefersReducedMotion) {
-      el.style.opacity = '1';
-      el.style.transform = 'translateY(0)';
+      setVisible(true);
       return;
     }
-
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(16px)';
-    el.style.transition = `opacity 400ms cubic-bezier(0.23, 1, 0.32, 1) ${delay}ms, transform 400ms cubic-bezier(0.23, 1, 0.32, 1) ${delay}ms`;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          el.style.opacity = '1';
-          el.style.transform = 'translateY(0)';
+          setVisible(true);
           observer.disconnect();
         }
       },
@@ -42,10 +38,14 @@ export function Reveal({ children, className, delay = 0 }: RevealProps) {
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, [delay]);
+  }, []);
 
   return (
-    <div ref={ref} className={className}>
+    <div
+      ref={ref}
+      className={cn('landing-reveal', visible && 'is-visible', className)}
+      style={delay > 0 ? { transitionDelay: `${delay}ms` } : undefined}
+    >
       {children}
     </div>
   );

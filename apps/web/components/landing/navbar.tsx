@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { ModeToggle } from '@/components/mode-toggle';
 import { Button } from '@/components/ui/button';
 import { scrollToHash } from '@/lib/scroll-to-hash';
@@ -24,6 +24,8 @@ function handleNavAnchorClick(
 }
 
 export function Navbar() {
+  const headerRef = useRef<HTMLElement>(null);
+
   useEffect(() => {
     const hash = window.location.hash;
     if (!hash) return;
@@ -33,8 +35,25 @@ export function Navbar() {
     });
   }, []);
 
+  useEffect(() => {
+    const header = headerRef.current;
+    if (!header) return;
+
+    const onScroll = () => {
+      header.dataset.scrolled = window.scrollY > 16 ? 'true' : 'false';
+    };
+
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   return (
-    <header className="sticky top-0 z-50 border-b border-transparent bg-background/80 backdrop-blur-md">
+    <header
+      ref={headerRef}
+      data-scrolled="false"
+      className="landing-navbar sticky top-0 z-50 border-b border-transparent bg-background/80 backdrop-blur-md"
+    >
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-4 px-4 md:px-6">
         <Link href="/" className="shrink-0 transition-opacity hover:opacity-80">
           <FaktiirLogo className="h-5 w-auto text-primary" />

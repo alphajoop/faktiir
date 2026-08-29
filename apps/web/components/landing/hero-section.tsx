@@ -22,24 +22,24 @@ export function HeroSection() {
         className="landing-grid-bg pointer-events-none absolute inset-0 -z-10 opacity-[0.03] dark:opacity-[0.06]"
       />
 
-      <div className="hero-animate-1 mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-muted/60 px-3.5 py-1.5 text-xs font-medium text-muted-foreground">
+      <div className="landing-enter landing-enter-delay-1 mb-6 inline-flex items-center gap-2 rounded-full border border-border bg-muted/60 px-3.5 py-1.5 text-xs font-medium text-muted-foreground">
         <GithubIcon className="size-3" />
         Open source · Gratuit · Sans engagement
       </div>
 
-      <h1 className="hero-animate-2 font-heading text-4xl font-semibold tracking-tight text-foreground sm:text-5xl md:text-6xl lg:text-7xl">
+      <h1 className="landing-enter landing-enter-delay-2 font-heading text-4xl font-semibold tracking-tight text-foreground sm:text-5xl md:text-6xl lg:text-7xl">
         La facturation
         <br />
         <span className="text-primary">qui ne vous ralentit pas.</span>
       </h1>
 
-      <p className="hero-animate-3 mx-auto mt-6 max-w-xl text-base text-muted-foreground sm:text-lg">
+      <p className="landing-enter landing-enter-delay-3 mx-auto mt-6 max-w-xl text-base text-muted-foreground sm:text-lg">
         Créez, envoyez et gérez vos factures professionnelles en quelques
         secondes. Conçu pour les freelances et petites entreprises
         d&apos;Afrique francophone.
       </p>
 
-      <div className="hero-animate-4 mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+      <div className="landing-enter landing-enter-delay-4 mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
         <Button size="lg" asChild className="h-11 px-6 text-base">
           <Link href="/register">
             Créer un compte gratuit
@@ -63,11 +63,11 @@ export function HeroSection() {
         </Button>
       </div>
 
-      <p className="hero-animate-5 mt-5 text-xs text-muted-foreground/60">
+      <p className="landing-enter landing-enter-delay-5 mt-5 text-xs text-muted-foreground/60">
         Aucune carte bancaire requise · Exportez vos données à tout moment
       </p>
 
-      <div className="hero-animate-6 mt-16">
+      <div className="landing-hero-preview mt-16">
         <AppPreview />
       </div>
     </LandingSection>
