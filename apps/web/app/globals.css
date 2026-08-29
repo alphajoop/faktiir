@@ -163,8 +163,8 @@
   }
 
   [data-slot="button"]:active:not(:disabled):not([aria-disabled="true"]):not(
-      [aria-haspopup]
-    ) {
+    [aria-haspopup]
+  ) {
     transform: scale(0.97);
   }
 
