@@ -91,6 +91,11 @@
   --sidebar-ring: oklch(0.6 0.25 280);
 
   --ease-out-expo: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1);
+  --duration-press: 160ms;
+  --duration-ui: 200ms;
+  --duration-reveal: 450ms;
+  --duration-enter: 550ms;
 }
 
 .dark {
@@ -139,41 +144,191 @@
     @apply bg-background text-foreground;
   }
   html {
-    @apply font-sans;
+    @apply font-sans scroll-smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
+  [data-slot="button"] {
+    transition:
+      transform var(--duration-press) var(--ease-out-expo),
+      background-color 200ms ease,
+      color 200ms ease,
+      border-color 200ms ease,
+      box-shadow 200ms ease;
+  }
+
+  [data-slot="button"]:active:not(:disabled):not([aria-disabled="true"]):not(
+    [aria-haspopup]
+  ) {
+    transform: scale(0.97);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    [data-slot="button"] {
+      transition:
+        background-color 200ms ease,
+        color 200ms ease,
+        border-color 200ms ease,
+        box-shadow 200ms ease;
+    }
+
+    [data-slot="button"]:active {
+      transform: none;
+    }
   }
 }
 
-/* Landing page animations */
+/* Landing motion */
 
-@keyframes fade-slide-up {
+@keyframes landing-fade-up {
   from {
     opacity: 0;
-    transform: translateY(16px);
+    transform: translateY(12px) scale(1);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 
-/* Staggered hero entrance — apply to direct children of the hero text block */
-.hero-animate-1 {
-  animation: fade-slide-up 500ms var(--ease-out-expo) both;
+@keyframes landing-hero-preview-enter {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
-.hero-animate-2 {
-  animation: fade-slide-up 500ms var(--ease-out-expo) 80ms both;
+
+.landing-enter {
+  animation: landing-fade-up var(--duration-enter) var(--ease-out-expo) both;
 }
-.hero-animate-3 {
-  animation: fade-slide-up 500ms var(--ease-out-expo) 160ms both;
+
+.landing-enter-delay-1 {
+  animation-delay: 50ms;
 }
-.hero-animate-4 {
-  animation: fade-slide-up 500ms var(--ease-out-expo) 240ms both;
+.landing-enter-delay-2 {
+  animation-delay: 100ms;
 }
-.hero-animate-5 {
-  animation: fade-slide-up 500ms var(--ease-out-expo) 320ms both;
+.landing-enter-delay-3 {
+  animation-delay: 150ms;
 }
-.hero-animate-6 {
-  animation: fade-slide-up 600ms var(--ease-out-expo) 400ms both;
+.landing-enter-delay-4 {
+  animation-delay: 200ms;
+}
+.landing-enter-delay-5 {
+  animation-delay: 280ms;
+}
+.landing-enter-delay-6 {
+  animation-delay: 360ms;
+}
+
+.landing-hero-preview {
+  animation: landing-hero-preview-enter 600ms var(--ease-out-expo) 360ms both;
+}
+
+.landing-reveal {
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity var(--duration-reveal) var(--ease-out-expo),
+    transform var(--duration-reveal) var(--ease-out-expo);
+}
+
+.landing-reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.feature-card {
+  transition:
+    transform var(--duration-ui) var(--ease-out-expo),
+    box-shadow var(--duration-ui) ease;
+}
+
+.feature-card-icon {
+  transition:
+    transform var(--duration-ui) var(--ease-out-expo),
+    background-color var(--duration-ui) ease,
+    color var(--duration-ui) ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .feature-card:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 4px 6px -1px oklch(0 0 0 / 0.06),
+      0 2px 4px -2px oklch(0 0 0 / 0.06);
+  }
+
+  .feature-card:hover .feature-card-icon {
+    transform: scale(1.03);
+  }
+}
+
+.landing-navbar {
+  transition: border-color var(--duration-ui) ease;
+}
+
+.landing-navbar[data-scrolled="true"] {
+  border-color: var(--border);
+}
+
+.how-it-works-connector-line {
+  background: var(--primary);
+  transform: scaleY(0);
+  transform-origin: top;
+  transition: transform 600ms var(--ease-in-out-strong);
+}
+
+.how-it-works-steps.is-visible .how-it-works-connector-line {
+  transform: scaleY(1);
+}
+
+#faq [data-slot="accordion-trigger"] {
+  transition: color var(--duration-ui) ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-enter,
+  .landing-hero-preview {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .landing-reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .feature-card,
+  .feature-card-icon {
+    transition:
+      background-color var(--duration-ui) ease,
+      color var(--duration-ui) ease;
+  }
+
+  .feature-card:hover {
+    transform: none;
+  }
+
+  .feature-card:hover .feature-card-icon {
+    transform: none;
+  }
+
+  .how-it-works-connector-line {
+    transform: scaleY(1);
+    transition: none;
+  }
 }
 
 .landing-grid-bg {

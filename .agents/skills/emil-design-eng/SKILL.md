@@ -1,7 +1,8 @@
----
+***
+
 name: emil-design-eng
 description: This skill encodes Emil Kowalski's philosophy on UI polish, component design, animation decisions, and the invisible details that make software feel great.
----
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Design Engineering
 
@@ -45,7 +46,7 @@ When reviewing UI code, you MUST use a markdown table with Before/After columns.
 | `transform: scale(0)` | `transform: scale(0.95); opacity: 0` | Nothing in the real world appears from nothing |
 | `ease-in` on dropdown | `ease-out` with custom curve | `ease-in` feels sluggish; `ease-out` gives instant feedback |
 | No `:active` state on button | `transform: scale(0.97)` on `:active` | Buttons must feel responsive to press |
-| `transform-origin: center` on popover | `transform-origin: var(--radix-popover-content-transform-origin)` | Popovers should scale from their trigger (not modals — modals stay centered) |
+| `transform-origin: center` on popover | `transform-origin: var(--transform-origin)` | Popovers should scale from their trigger (not modals — modals stay centered) |
 
 Wrong format (never do this):
 
@@ -84,26 +85,26 @@ Every animation must have a clear answer to "why does this animate?"
 
 Valid purposes:
 
-- **Spatial consistency**: toast enters and exits from the same direction, making swipe-to-dismiss feel intuitive
-- **State indication**: a morphing feedback button shows the state change
-- **Explanation**: a marketing animation that shows how a feature works
-- **Feedback**: a button scales down on press, confirming the interface heard the user
-- **Preventing jarring changes**: elements appearing or disappearing without transition feel broken
+* **Spatial consistency**: toast enters and exits from the same direction, making swipe-to-dismiss feel intuitive
+* **State indication**: a morphing feedback button shows the state change
+* **Explanation**: a marketing animation that shows how a feature works
+* **Feedback**: a button scales down on press, confirming the interface heard the user
+* **Preventing jarring changes**: elements appearing or disappearing without transition feel broken
 
 If the purpose is just "it looks cool" and the user will see it often, don't animate.
 
 ### 3. What easing should it use?
 
 Is the element entering or exiting?
-  Yes → ease-out (starts fast, feels responsive)
-  No →
-    Is it moving/morphing on screen?
-      Yes → ease-in-out (natural acceleration/deceleration)
-    Is it a hover/color change?
-      Yes → ease
-    Is it constant motion (marquee, progress bar)?
-      Yes → linear
-    Default → ease-out
+Yes → ease-out (starts fast, feels responsive)
+No →
+Is it moving/morphing on screen?
+Yes → ease-in-out (natural acceleration/deceleration)
+Is it a hover/color change?
+Yes → ease
+Is it constant motion (marquee, progress bar)?
+Yes → linear
+Default → ease-out
 
 **Critical: use custom easing curves.** The built-in CSS easings are too weak. They lack the punch that makes animations feel intentional.
 
@@ -118,7 +119,7 @@ Is the element entering or exiting?
 --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 ```
 
-**Never use ease-in for UI animations.** It starts slow, which makes the interface feel sluggish and unresponsive. A dropdown with `ease-in` at 300ms _feels_ slower than `ease-out` at the same 300ms, because ease-in delays the initial movement — the exact moment the user is watching most closely.
+**Never use ease-in for UI animations.** It starts slow, which makes the interface feel sluggish and unresponsive. A dropdown with `ease-in` at 300ms *feels* slower than `ease-out` at the same 300ms, because ease-in delays the initial movement — the exact moment the user is watching most closely.
 
 **Easing curve resources:** Don't create curves from scratch. Use [easing.dev](https://easing.dev/) or [easings.co](https://easings.co/) to find stronger custom variants of standard easings.
 
@@ -138,11 +139,11 @@ Is the element entering or exiting?
 
 Speed in animation is not just about feeling snappy — it directly affects how users perceive your app's performance:
 
-- A **fast-spinning spinner** makes loading feel faster (same load time, different perception)
-- A **180ms select** animation feels more responsive than a **400ms** one
-- **Instant tooltips** after the first one is open (skip delay + skip animation) make the whole toolbar feel faster
+* A **fast-spinning spinner** makes loading feel faster (same load time, different perception)
+* A **180ms select** animation feels more responsive than a **400ms** one
+* **Instant tooltips** after the first one is open (skip delay + skip animation) make the whole toolbar feel faster
 
-The perception of speed matters as much as actual speed. Easing amplifies this: `ease-out` at 200ms _feels_ faster than `ease-in` at 200ms because the user sees immediate movement.
+The perception of speed matters as much as actual speed. Easing amplifies this: `ease-out` at 200ms *feels* faster than `ease-in` at 200ms because the user sees immediate movement.
 
 ## Spring Animations
 
@@ -150,10 +151,10 @@ Springs feel more natural than duration-based animations because they simulate r
 
 ### When to use springs
 
-- Drag interactions with momentum
-- Elements that should feel "alive" (like Apple's Dynamic Island)
-- Gestures that can be interrupted mid-animation
-- Decorative mouse-tracking interactions
+* Drag interactions with momentum
+* Elements that should feel "alive" (like Apple's Dynamic Island)
+* Gestures that can be interrupted mid-animation
+* Decorative mouse-tracking interactions
 
 ### Spring-based mouse interactions
 
@@ -236,11 +237,6 @@ Start from `scale(0.9)` or higher, combined with opacity. Even a barely-visible 
 Popovers should scale in from their trigger, not from center. The default `transform-origin: center` is wrong for almost every popover. **Exception: modals.** Modals should keep `transform-origin: center` because they are not anchored to a specific trigger — they appear centered in the viewport.
 
 ```css
-/* Radix UI */
-.popover {
-  transform-origin: var(--radix-popover-content-transform-origin);
-}
-
 /* Base UI */
 .popover {
   transform-origin: var(--transform-origin);
@@ -647,10 +643,10 @@ Play animations at reduced speed to spot issues invisible at full speed. Tempora
 
 Things to look for in slow motion:
 
-- Do colors transition smoothly, or do you see two distinct states overlapping?
-- Does the easing feel right, or does it start/stop abruptly?
-- Is the transform-origin correct, or does the element scale from the wrong point?
-- Are multiple animated properties (opacity, transform, color) in sync?
+* Do colors transition smoothly, or do you see two distinct states overlapping?
+* Does the easing feel right, or does it start/stop abruptly?
+* Is the transform-origin correct, or does the element scale from the wrong point?
+* Are multiple animated properties (opacity, transform, color) in sync?
 
 ### Frame-by-frame inspection
 
@@ -669,7 +665,7 @@ When reviewing UI code, check for:
 | `transition: all`                          | Specify exact properties: `transition: transform 200ms ease-out` |
 | `scale(0)` entry animation                 | Start from `scale(0.95)` with `opacity: 0`                       |
 | `ease-in` on UI element                    | Switch to `ease-out` or custom curve                             |
-| `transform-origin: center` on popover      | Set to trigger location or use Radix/Base UI CSS variable (modals are exempt — keep centered) |
+| `transform-origin: center` on popover      | Set to trigger location or use Base UI's `var(--transform-origin)` (modals are exempt — keep centered) |
 | Animation on keyboard action               | Remove animation entirely                                        |
 | Duration > 300ms on UI element             | Reduce to 150-250ms                                              |
 | Hover animation without media query        | Add `@media (hover: hover) and (pointer: fine)`                  |

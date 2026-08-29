@@ -48,9 +48,10 @@ export function useCreateClient() {
     mutationFn: (body: Omit<Client, 'id' | 'userId'>) =>
       clients.create({
         ...body,
-        email: body.email ?? undefined,
-        address: body.address ?? undefined,
-        phone: body.phone ?? undefined,
+        name: body.name.trim(),
+        email: body.email?.trim() || undefined,
+        address: body.address?.trim() || undefined,
+        phone: body.phone?.trim() || undefined,
       }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['clients'] }),
   });
@@ -62,9 +63,10 @@ export function useUpdateClient() {
     mutationFn: ({ id, ...body }: Partial<Client> & { id: string }) =>
       clients.update(id, {
         ...body,
-        email: body.email ?? undefined,
-        address: body.address ?? undefined,
-        phone: body.phone ?? undefined,
+        name: body.name?.trim(),
+        email: body.email?.trim() || undefined,
+        address: body.address?.trim() || undefined,
+        phone: body.phone?.trim() || undefined,
       }),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['clients'] }),
   });
