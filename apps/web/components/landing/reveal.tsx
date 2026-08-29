@@ -15,7 +15,16 @@ export function Reveal({ children, className, delay = 0 }: RevealProps) {
     const el = ref.current;
     if (!el) return;
 
-    // Start hidden
+    const prefersReducedMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)',
+    ).matches;
+
+    if (prefersReducedMotion) {
+      el.style.opacity = '1';
+      el.style.transform = 'translateY(0)';
+      return;
+    }
+
     el.style.opacity = '0';
     el.style.transform = 'translateY(16px)';
     el.style.transition = `opacity 400ms cubic-bezier(0.23, 1, 0.32, 1) ${delay}ms, transform 400ms cubic-bezier(0.23, 1, 0.32, 1) ${delay}ms`;
