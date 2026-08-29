@@ -191,7 +191,12 @@ async function request<T>(
     let message = res.statusText;
     try {
       const body = await res.json();
-      message = body.message ?? message;
+      const raw = body.message ?? message;
+      if (Array.isArray(raw)) {
+        message = raw.join(' ');
+      } else if (typeof raw === 'string') {
+        message = raw;
+      }
     } catch {}
     throw new ApiError(res.status, message);
   }

@@ -18,6 +18,20 @@ export const clientSchema = z.object({
 
 export type ClientFormValues = z.infer<typeof clientSchema>;
 
+function normalizeClientFormValues(value: {
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+}) {
+  return {
+    name: value.name.trim(),
+    email: value.email.trim(),
+    phone: value.phone.trim(),
+    address: value.address.trim(),
+  };
+}
+
 interface ClientFormProps {
   defaultValues?: Partial<ClientFormValues>;
   onSubmit: (values: ClientFormValues) => void | Promise<void>;
@@ -41,9 +55,22 @@ export function ClientForm({
       address: defaultValues?.address ?? '',
     },
     onSubmit: async ({ value }) => {
-      const parsed = clientSchema.safeParse(value);
+      const normalized = normalizeClientFormValues(value);
+      const parsed = clientSchema.safeParse(normalized);
       if (!parsed.success) return;
-      await onSubmit(parsed.data);
+      await onSubmit({
+        ...parsed.data,
+        email: parsed.data.email?.trim() || undefined,
+        phone: parsed.data.phone || undefined,
+        address: parsed.data.address || undefined,
+      });
+    },
+    validators: {
+      onSubmit: ({ value }) => {
+        const parsed = clientSchema.safeParse(normalizeClientFormValues(value));
+        if (parsed.success) return undefined;
+        return parsed.error.issues[0]?.message ?? 'Formulaire invalide';
+      },
     },
   });
 
@@ -86,8 +113,13 @@ export function ClientForm({
         name="email"
         validators={{
           onChange: ({ value }) => {
-            if (!value) return undefined;
-            const r = z.email().safeParse(value);
+            if (!value.trim()) return undefined;
+            const r = z.email('E-mail invalide').safeParse(value.trim());
+            return r.success ? undefined : 'E-mail invalide';
+          },
+          onSubmit: ({ value }) => {
+            if (!value.trim()) return undefined;
+            const r = z.email('E-mail invalide').safeParse(value.trim());
             return r.success ? undefined : 'E-mail invalide';
           },
         }}
