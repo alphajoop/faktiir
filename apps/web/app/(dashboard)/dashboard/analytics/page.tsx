@@ -305,6 +305,7 @@ function AnalyticsContent({ data }: { data: AnalyticsData }) {
         <div className={`h-55 w-full ${RECHARTS_WRAPPER}`}>
           <ResponsiveContainer width="100%" height="100%">
             <AreaChart
+              accessibilityLayer
               data={chartData}
               margin={{ top: 4, right: 4, left: 0, bottom: 0 }}
             >
@@ -373,6 +374,7 @@ function AnalyticsContent({ data }: { data: AnalyticsData }) {
           <div className={`h-45 w-full ${RECHARTS_WRAPPER}`}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
+                accessibilityLayer
                 data={chartData}
                 margin={{ top: 4, right: 4, left: -20, bottom: 0 }}
                 barSize={18}
