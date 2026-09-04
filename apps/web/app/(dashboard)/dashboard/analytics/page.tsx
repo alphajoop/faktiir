@@ -12,6 +12,7 @@ import {
   UsersIcon,
 } from 'lucide-react';
 import { useState } from 'react';
+import type { TooltipProps as RechartsTooltipProps } from 'recharts';
 import {
   Area,
   AreaChart,
@@ -19,30 +20,99 @@ import {
   BarChart,
   CartesianGrid,
   Cell,
+  ResponsiveContainer,
+  Tooltip,
   XAxis,
   YAxis,
 } from 'recharts';
+import type {
+  NameType,
+  ValueType,
+} from 'recharts/types/component/DefaultTooltipContent';
+
+type TooltipRenderProps<
+  TValue extends ValueType = ValueType,
+  TName extends NameType = NameType,
+> = Pick<RechartsTooltipProps<TValue, TName>, 'active'> & {
+  payload?: Array<{ value?: TValue; name?: TName }>;
+  label?: string | number;
+};
+
 import { AnalyticsSkeleton } from '@/components/analytics-skeleton';
 import { ErrorState } from '@/components/error-state';
 import { PageHeader } from '@/components/page-header';
 import { PaymentRateRing } from '@/components/payment-rate-ring';
 import { StatCard } from '@/components/stat-card';
 import { TopClientRow } from '@/components/top-client-row';
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from '@/components/ui/chart';
 import { Caption, Text } from '@/components/ui/typography';
 import type { AnalyticsData } from '@/lib/api';
-import { invoiceChartConfig, revenueChartConfig } from '@/lib/chart-configs';
 import { classifyError } from '@/lib/error-utils';
 import { formatCurrency } from '@/lib/format';
 import { useAnalytics } from '@/lib/hooks';
 
+const CHART_COLOR_1 = 'var(--chart-1)';
+const CHART_COLOR_2 = 'var(--chart-2)';
+
+const RECHARTS_WRAPPER =
+  'text-xs [&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground [&_.recharts-cartesian-grid_line]:stroke-border/50';
+
 function pct(value: number, total: number) {
   if (total === 0) return 0;
   return Math.round((value / total) * 100);
+}
+
+function ChartTooltipShell({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="rounded-lg border border-border/50 bg-background px-3 py-2 text-xs shadow-xl">
+      {children}
+    </div>
+  );
+}
+
+function RevenueTooltip({
+  active,
+  payload,
+  label,
+}: TooltipRenderProps<number, string>) {
+  if (!active || !payload?.length) return null;
+  return (
+    <ChartTooltipShell>
+      <p className="mb-1 font-medium">{label}</p>
+      <div className="flex items-center gap-2">
+        <span
+          className="inline-block h-2.5 w-0.5 shrink-0 rounded-full"
+          style={{ backgroundColor: CHART_COLOR_1 }}
+        />
+        <span className="text-muted-foreground">Chiffre d&apos;affaires</span>
+        <span className="ml-auto font-medium tabular-nums">
+          {formatCurrency(Number(payload[0].value ?? 0))}
+        </span>
+      </div>
+    </ChartTooltipShell>
+  );
+}
+
+function InvoiceTooltip({
+  active,
+  payload,
+  label,
+}: TooltipRenderProps<number, string>) {
+  if (!active || !payload?.length) return null;
+  return (
+    <ChartTooltipShell>
+      <p className="mb-1 font-medium">{label}</p>
+      <div className="flex items-center gap-2">
+        <span
+          className="inline-block size-2.5 shrink-0 rounded-xs"
+          style={{ backgroundColor: CHART_COLOR_2 }}
+        />
+        <span className="text-muted-foreground">Factures</span>
+        <span className="ml-auto font-medium tabular-nums">
+          {payload[0].value}
+        </span>
+      </div>
+    </ChartTooltipShell>
+  );
 }
 
 export default function AnalyticsPage() {
@@ -101,8 +171,13 @@ export default function AnalyticsPage() {
 }
 
 function AnalyticsContent({ data }: { data: AnalyticsData }) {
-  // Couleur des barres par mois — met en évidence le mois courant
   const currentMonth = new Date().getMonth() + 1;
+  const currentYear = new Date().getFullYear();
+
+  const chartData =
+    data.year === currentYear
+      ? data.monthlyRevenue.filter((m) => m.month <= currentMonth)
+      : data.monthlyRevenue;
 
   return (
     <div className="flex flex-1 flex-col gap-6 p-4 md:p-6">
@@ -146,7 +221,6 @@ function AnalyticsContent({ data }: { data: AnalyticsData }) {
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         <PaymentRateRing rate={data.paymentRate} />
 
-        {/* Statut breakdown */}
         <div className="sm:col-span-2 rounded-xl border border-border bg-card p-4 flex flex-col gap-3">
           <Caption>Répartition des statuts</Caption>
           <div className="flex flex-col gap-2.5">
@@ -205,7 +279,7 @@ function AnalyticsContent({ data }: { data: AnalyticsData }) {
         <div className="flex items-center justify-between">
           <div>
             <Text size="sm" weight="semibold">
-              Chiffre d'affaires mensuel
+              Chiffre d&apos;affaires mensuel
             </Text>
             <Caption>Factures payées en {data.year}</Caption>
           </div>
@@ -228,75 +302,66 @@ function AnalyticsContent({ data }: { data: AnalyticsData }) {
           )}
         </div>
 
-        <ChartContainer config={revenueChartConfig} className="h-55 w-full">
-          <AreaChart
-            accessibilityLayer
-            data={data.monthlyRevenue}
-            margin={{ top: 4, right: 4, left: 0, bottom: 0 }}
-          >
-            <defs>
-              <linearGradient id="revenueGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop
-                  offset="5%"
-                  stopColor="var(--color-revenue)"
-                  stopOpacity={0.15}
-                />
-                <stop
-                  offset="95%"
-                  stopColor="var(--color-revenue)"
-                  stopOpacity={0}
-                />
-              </linearGradient>
-            </defs>
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="label"
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              tickFormatter={(value) => value}
-            />
-            <YAxis
-              tickFormatter={(v) =>
-                v >= 1_000_000
-                  ? `${(v / 1_000_000).toFixed(1)}M`
-                  : v >= 1_000
-                    ? `${(v / 1_000).toFixed(0)}k`
-                    : String(v)
-              }
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-            />
-            <ChartTooltip
-              content={
-                <ChartTooltipContent
-                  indicator="line"
-                  labelFormatter={(value) => `${value}`}
-                  formatter={(value) => formatCurrency(value as number)}
-                />
-              }
-            />
-            <Area
-              type="monotone"
-              dataKey="revenue"
-              fill="url(#revenueGrad)"
-              stroke="var(--color-revenue)"
-              strokeWidth={2}
-              dot={false}
-              activeDot={{
-                r: 4,
-                stroke: 'var(--color-revenue)',
-                strokeWidth: 0,
-              }}
-            />
-          </AreaChart>
-        </ChartContainer>
+        <div className={`h-55 w-full ${RECHARTS_WRAPPER}`}>
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart
+              data={chartData}
+              margin={{ top: 4, right: 4, left: 0, bottom: 0 }}
+            >
+              <defs>
+                <linearGradient id="revenueGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop
+                    offset="5%"
+                    stopColor={CHART_COLOR_1}
+                    stopOpacity={0.15}
+                  />
+                  <stop
+                    offset="95%"
+                    stopColor={CHART_COLOR_1}
+                    stopOpacity={0}
+                  />
+                </linearGradient>
+              </defs>
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="label"
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+              />
+              <YAxis
+                tickFormatter={(v) =>
+                  v >= 1_000_000
+                    ? `${(v / 1_000_000).toFixed(1)}M`
+                    : v >= 1_000
+                      ? `${(v / 1_000).toFixed(0)}k`
+                      : String(v)
+                }
+                tickLine={false}
+                axisLine={false}
+                tickMargin={8}
+              />
+              <Tooltip content={<RevenueTooltip />} />
+              <Area
+                type="monotone"
+                dataKey="revenue"
+                fill="url(#revenueGrad)"
+                stroke={CHART_COLOR_1}
+                strokeWidth={2}
+                dot={false}
+                activeDot={{
+                  r: 4,
+                  stroke: CHART_COLOR_1,
+                  strokeWidth: 0,
+                }}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
       </div>
 
       {/* ── Factures par mois + Top clients ── */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        {/* Factures payées par mois — Bar chart */}
         <div className="rounded-xl border border-border bg-card p-5 flex flex-col gap-4">
           <div>
             <Text size="sm" weight="semibold">
@@ -305,60 +370,48 @@ function AnalyticsContent({ data }: { data: AnalyticsData }) {
             <Caption>Nombre de factures encaissées</Caption>
           </div>
 
-          <ChartContainer config={invoiceChartConfig} className="h-45 w-full">
-            <BarChart
-              accessibilityLayer
-              data={data.monthlyRevenue}
-              margin={{ top: 4, right: 4, left: -20, bottom: 0 }}
-              barSize={18}
-            >
-              <CartesianGrid vertical={false} />
-              <XAxis
-                dataKey="label"
-                tickLine={false}
-                axisLine={false}
-                tickMargin={8}
-                tickFormatter={(value) => value}
-              />
-              <YAxis
-                allowDecimals={false}
-                tickLine={false}
-                axisLine={false}
-                tickMargin={8}
-              />
-              <ChartTooltip
-                content={
-                  <ChartTooltipContent
-                    indicator="dot"
-                    labelFormatter={(value) => `${value}`}
-                    formatter={(value) => `${value} factures`}
-                  />
-                }
-              />
-              <Bar dataKey="count" radius={[3, 3, 0, 0]}>
-                {data.monthlyRevenue.map((entry) => (
-                  <Cell
-                    key={entry.month}
-                    fill={
-                      entry.month === currentMonth
-                        ? 'var(--color-count)'
-                        : 'var(--color-count) / 0.3'
-                    }
-                  />
-                ))}
-              </Bar>
-            </BarChart>
-          </ChartContainer>
+          <div className={`h-45 w-full ${RECHARTS_WRAPPER}`}>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                data={chartData}
+                margin={{ top: 4, right: 4, left: -20, bottom: 0 }}
+                barSize={18}
+              >
+                <CartesianGrid vertical={false} />
+                <XAxis
+                  dataKey="label"
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                />
+                <YAxis
+                  allowDecimals={false}
+                  tickLine={false}
+                  axisLine={false}
+                  tickMargin={8}
+                />
+                <Tooltip content={<InvoiceTooltip />} />
+                <Bar dataKey="count" radius={[3, 3, 0, 0]}>
+                  {chartData.map((entry) => (
+                    <Cell
+                      key={entry.month}
+                      fill={CHART_COLOR_2}
+                      fillOpacity={entry.month === currentMonth ? 1 : 0.3}
+                    />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
         </div>
 
-        {/* Top clients */}
         <div className="rounded-xl border border-border bg-card p-5 flex flex-col gap-3">
           <div className="flex items-center justify-between">
             <div>
               <Text size="sm" weight="semibold">
                 Top clients
               </Text>
-              <Caption>Par chiffre d'affaires payé</Caption>
+              <Caption>Par chiffre d&apos;affaires payé</Caption>
             </div>
             <Caption className="text-right">
               <span className="hidden sm:inline">Payées/</span>Total
